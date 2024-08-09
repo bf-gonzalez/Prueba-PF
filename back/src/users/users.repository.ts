@@ -20,6 +20,7 @@ import { Membership } from 'src/membership/membership.entity';
 import { MembershipType } from 'src/enum/membership-type.enum';
 import { MembershipsRepository } from 'src/membership/membership.repository';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersRepository {
@@ -279,6 +280,12 @@ export class UsersRepository {
 
   async updateUser(id: string, user: Partial<Users>) {
     try {
+
+      //En caso de querer cambiar el password
+      if(user.password){
+        user.password = await bcrypt.hash(user.password, 10);
+      }
+      
       await this.usersRepository.update(id, user);
       const updateUser = await this.usersRepository.findOneBy({ id });
       if (!updateUser) {
