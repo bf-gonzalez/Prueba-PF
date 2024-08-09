@@ -14,12 +14,11 @@ function NotFoundComp () {
 
     <div className="flex">
 
-    <button type="button" onClick={() => router.push ('/home')} >
+    {/* <button type="button" onClick={() => router.push ('/home')} >
         <img src="/images/volverBtn.png" alt="Volver"
-        className="volver transition-transform
-        transition-shadow duration-300 hover:scale-105
+        className="volver transition-transform duration-300 hover:scale-105
         cursor-pointer "  />
-    </button>
+    </button> */}
 
     </div>
     </main>

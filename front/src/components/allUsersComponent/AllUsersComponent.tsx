@@ -128,52 +128,58 @@ const AllUsersComponent: React.FC = () => {
           </div>
           <section className="flex flex-row flex-wrap justify-center pt-6 w-screen pb-12">
             
-            {currentUsers.map((user) => (
-              <div
-                key={user.id}
-                className="flex flex-col items-center justify-center w-[240vw] max-w-md bg-gray-800 bg-opacity-60 p-4 m-4 rounded-lg shadow-lg h-[40vh]"
-              >
-              <h1 className={`${bebas.variable} font-sans text-center text-3xl uppercase mb-4 text-yellow-400`}>
-                ROL: {user.role}
-              </h1>
+            {currentUsers.map((user) => {
+              const isAdminUser = user.username === "ComiCraft2024"; // Verificar si es administrador
 
-                <div className="flex items-center">
-                {user.profilePicture === "none" ? (
-                <img
-                src= "/images/userIcon2.png"
-                className="w-32 h-32 rounded-xl object-cover border-4 border-rose-800 mr-4"
-                alt={`${user.username} Profile Picture`}
-                />
-                ) : (
-                  <img
-                  src={user.profilePicture || "/images/userIcon2.png"}
-                  className="w-32 h-32 rounded-xl object-cover border-4 border-rose-800 mr-4"
-                  alt={`${user.username} Profile Picture`}
-                />
-                )
-                }              
-                  <div className="flex flex-col justify-between h-32">
-                    <button
-                      onClick={() => handleUserClick(user.id)} // Asegúrate de pasar el id del usuario
-                      className="text-3xl text-white hover:text-yellow-400 transition-colors duration-300 w-full truncate text-center"
-                    >
-                      {user.username}
-                    </button>
+              return (
+                <div
+                  key={user.id}
+                  className="flex flex-col items-center justify-center w-[240vw] max-w-md bg-gray-800 bg-opacity-60 p-4 m-4 rounded-lg shadow-lg h-[40vh]"
+                >
+                  <h1 className={`${bebas.variable} font-sans text-center text-3xl uppercase mb-4 text-yellow-400`}>
+                    ROL: {user.role}
+                  </h1>
 
-                    {user.isDeleted ? (
-                      <UnBanUserButton userId={user.id} isDeleted={user.isDeleted}  />
+                  <div className="flex items-center">
+                    {user.profilePicture === "none" ? (
+                      <img
+                        src="/images/userIcon2.png"
+                        className="w-32 h-32 rounded-xl object-cover border-4 border-rose-800 mr-4"
+                        alt={`${user.username} Profile Picture`}
+                      />
                     ) : (
-                    <BanUserButton userId={user.id} isDeleted={user.isDeleted} />
+                      <img
+                        src={user.profilePicture || "/images/userIcon2.png"}
+                        className="w-32 h-32 rounded-xl object-cover border-4 border-rose-800 mr-4"
+                        alt={`${user.username} Profile Picture`}
+                      />
                     )}
+                    <div className="flex flex-col justify-between h-32">
+                      <button
+                        onClick={() => handleUserClick(user.id)} // Asegúrate de pasar el id del usuario
+                        className="text-3xl text-white hover:text-yellow-400 transition-colors duration-300 w-full truncate text-center"
+                      >
+                        {user.username}
+                      </button>
 
-                    {user.isDeleted && (
-                      <h1 className="text-white">USUARIO BANNEADO</h1>
-                    )}
-                    
+                      {/* Renderizar los botones solo si no es un usuario administrador */}
+                      {!isAdminUser && (
+                        user.isDeleted ? (
+                          <UnBanUserButton userId={user.id} isDeleted={user.isDeleted} />
+                        ) : (
+                          <BanUserButton userId={user.id} isDeleted={user.isDeleted} />
+                        )
+                      )}
+
+                      {user.isDeleted && (
+                        <h1 className="text-white">USUARIO BANNEADO</h1>
+                      )}
+
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </section>
           <div className="flex self-end ml-auto ">
             <Pagination

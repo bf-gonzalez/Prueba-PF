@@ -12,6 +12,7 @@ import BanUserButton from "@/components/banUserBtn/BanUserBtn";
 import AllComicsComponent from "../../components/allComicsComponent/AllComicsComponent";
 import AllUsersComponent from "@/components/allUsersComponent/AllUsersComponent";
 import AllPendingComicsComponent from "@/components/allPendingComics/AllPendingComics";
+import NotFoundComp from "@/components/notFoundComp/NotFoundComp";
 
 const josefin = Josefin_Sans({
     subsets:['latin'],
@@ -26,7 +27,7 @@ const bebas = Bebas_Neue({
 
 export default function AdminDashboard() {
 
-    const {isLogged, user} = useContext(UserContext);
+    const { isLogged, user } = useContext(UserContext);
     const router = useRouter();
     const [userName, setUserName] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,40 +36,45 @@ export default function AdminDashboard() {
     const [membershipType, setMembershipType] = useState<string | null>(null);
     const [userComics, setUserComics] = useState([]);
     const [images, setImages] = useState({});
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
     useEffect(() => {
         const decodedUser = localStorage.getItem("decodedUser");
         if (decodedUser) {
-          const user = JSON.parse(decodedUser);
-          setUserName(user.name);
-          setMembershipType(user.MembershipType);
+            const user = JSON.parse(decodedUser);
+            setUserName(user.name);
+            setMembershipType(user.MembershipType);
 
-          // Fetch user data from backend
-          axios.get(`http://localhost:3000/users/${user.id}`)
-            .then(response => {
-              const userData = response.data;
-              setProfilePicture(userData.profilePicture === "none" ? "/images/userIcon2.png" : userData.profilePicture);
-            })
-            .catch(error => {
-              console.error("Error fetching user data:", error);
-            });
+            
+            const adminUsername = "ComiCraft2024";
+            setIsAdmin(user.username === adminUsername);
 
-          // Fetch user comics
-          axios.get("http://localhost:3000/comics")
-            .then(response => {
-              const comics = response.data;
-              const userComics = comics.filter(comic => comic.user.id === user.id);
-              setUserComics(userComics);
+            
+            axios.get(`http://localhost:3000/users/${user.id}`)
+                .then(response => {
+                    const userData = response.data;
+                    setProfilePicture(userData.profilePicture === "none" ? "/images/userIcon2.png" : userData.profilePicture);
+                })
+                .catch(error => {
+                    console.error("Error fetching user data:", error);
+                });
 
-              userComics.forEach(comic => {
-                fetchImages(comic.folderName, comic.id);
-              });
-            })
-            .catch(error => {
-              console.error("Error fetching comics:", error);
-            });
+
+            axios.get("http://localhost:3000/comics")
+                .then(response => {
+                    const comics = response.data;
+                    const userComics = comics.filter(comic => comic.user.id === user.id);
+                    setUserComics(userComics);
+
+                    userComics.forEach(comic => {
+                        fetchImages(comic.folderName, comic.id);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching comics:", error);
+                });
         }
-      }, []);
+    }, []);
 
     const fetchImages = async (folderName, comicId) => {
         try {
@@ -78,7 +84,6 @@ export default function AdminDashboard() {
             console.error('Error fetching images:', error);
         }
     };
-
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
@@ -100,270 +105,166 @@ export default function AdminDashboard() {
         formData.append('upload_preset', 'ml_default');
 
         try {
-          const response = await axios.post('https://api.cloudinary.com/v1_1/dx1kqmh8v/image/upload', formData);
-          const imageUrl = response.data.secure_url;
-          setProfilePicture(imageUrl);
+            const response = await axios.post('https://api.cloudinary.com/v1_1/dx1kqmh8v/image/upload', formData);
+            const imageUrl = response.data.secure_url;
+            setProfilePicture(imageUrl);
 
-          // Guardar la URL en el backend
-          const decodedToken = JSON.parse(localStorage.getItem("decodedToken"));
-          const userId = decodedToken.id;
-          await axios.put(`http://localhost:3000/users/${userId}/profile-picture`, {
-            profilePicture: imageUrl
-          });
+            // Guardar la URL en el backend
+            const decodedToken = JSON.parse(localStorage.getItem("decodedToken"));
+            const userId = decodedToken.id;
+            await axios.put(`http://localhost:3000/users/${userId}/profile-picture`, {
+                profilePicture: imageUrl
+            });
 
-          handleCloseModal();
+            handleCloseModal();
         } catch (error) {
-          console.error('Error uploading image:', error);
+            console.error('Error uploading image:', error);
         }
     };
-
 
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-      
-      const fetchUsers = () => {
-        axios.get("http://localhost:3000/users")
-          .then(response => {
-            const usersData = response.data; 
-            setUsers(usersData); 
-          })
-          .catch(error => {
-            console.error("Error fetching users:", error); 
-          });
-      };
-  
-      fetchUsers(); 
+
+        const fetchUsers = () => {
+            axios.get("http://localhost:3000/users")
+                .then(response => {
+                    const usersData = response.data;
+                    setUsers(usersData);
+                })
+                .catch(error => {
+                    console.error("Error fetching users:", error);
+                });
+        };
+
+        fetchUsers();
     }, []);
 
     
+    if (!isAdmin) {
+        return <NotFoundComp />;
+    }
 
     return (
         <div className={styles.fondo}>
 
-        {!isLogged ? (<AlertSignIn></AlertSignIn>) : (
+            <main className="flex flex-col max-w-screen-2xl pt-44 pb-36">
 
-<main className="flex flex-col max-w-screen-2xl pt-44 pb-36">
+                <section className="flex flex-row-reverse justify-evenly items-center">
 
-<section className="flex flex-row-reverse justify-evenly items-center">
-
-<div className="flex flex-col flex-wrap max-w-screen-xl items-center text-wrap  ">
-<p className={`${bebas.variable} font-sans 
+                    <div className="flex flex-col flex-wrap max-w-screen-xl items-center text-wrap  ">
+                        <p className={`${bebas.variable} font-sans 
             text-4xl text-rose-800
             self-center pb-6
             `}>
-              ADMINISTRADOR
-</p>
-<h1 className={`${josefin.variable} font-sans 
+                            ADMINISTRADOR
+                        </p>
+                        <h1 className={`${josefin.variable} font-sans 
             text-5xl text-white pb-1
             `}>BIENVENIDO/A</h1>
-<h2 className={`${josefin.variable} font-sans 
+                        <h2 className={`${josefin.variable} font-sans 
             text-5xl text-white uppercase self-center
             
             `}> {userName} </h2>
 
-{membershipType === 'creator' && (
-  <section className="flex flex-row space-x-12 self-center pt-6">
-    <p className={`${bebas.variable} font-sans 
+                        {membershipType === 'creator' && (
+                            <section className="flex flex-row space-x-12 self-center pt-6">
+                                <p className={`${bebas.variable} font-sans 
                 text-3xl text-yellow-400 max-w-96
-    `}>(NÚMERO) SEGUIDORES</p>    
-    <p className={`${bebas.variable} font-sans 
+    `}>(NÚMERO) SEGUIDORES</p>
+                                <p className={`${bebas.variable} font-sans 
                 text-3xl text-yellow-400 max-w-96
-    `}>(NÚMERO) COMICS</p>    
-  </section>
-)}
+    `}>(NÚMERO) COMICS</p>
+                            </section>
+                        )}
 
-</div>
+                    </div>
 
-<div className="flex flex-col items-center">
-{user.profilePicture === "none" ? (
-                <img
-                src= "/images/userIcon2.png"
-                className="w-64 h-64 rounded-xl object-cover object-center border-4 border-rose-800"
-                alt={`${user.username} Profile Picture`}
-                />
-                ) : (
-                  <img
-                  src={user.profilePicture || "/images/userIcon2.png"}
-                  className="w-64 h-64 rounded-xl object-cover object-center border-4 border-rose-800"
-                  alt={`${user.username} Profile Picture`}
-                />
-                )
-                }       
-<button onClick={handleOpenModal}>
-<p className={`${josefin.variable} font-sans uppercase text-white max-w-60 hover:text-blue-500 duration-300 self-center text-3xl pt-10`}>Cambiar foto de perfil</p>
-</button>
+                    <div className="flex flex-col items-center">
+                        {user.profilePicture === "none" ? (
+                            <img
+                                src="/images/userIcon2.png"
+                                className="w-64 h-64 rounded-xl object-cover object-center border-4 border-rose-800"
+                                alt={`${user.username} Profile Picture`}
+                            />
+                        ) : (
+                            <img
+                                src={user.profilePicture || "/images/userIcon2.png"}
+                                className="w-64 h-64 rounded-xl object-cover object-center border-4 border-rose-800"
+                                alt={`${user.username} Profile Picture`}
+                            />
+                        )
+                        }
+                        <button onClick={handleOpenModal}>
+                            <p className={`${josefin.variable} font-sans uppercase text-white max-w-60 hover:text-blue-500 duration-300 self-center text-3xl pt-10`}>Cambiar foto de perfil</p>
+                        </button>
 
-</div>
+                    </div>
 
-</section>
+                </section>
 
-<section className="flex flex-col items-center">
+                <section className="flex flex-col items-center">
 
-  <img 
-    src="/images/usuariosAsset.png" 
-    className="max-w-[23vw] pt-12 pb-16 mx-auto" 
-    alt="Usuarios"
-  />
-
-
-  <AllUsersComponent />
-</section>
+                    <img
+                        src="/images/usuariosAsset.png"
+                        className="max-w-[23vw] pt-12 pb-16 mx-auto"
+                        alt="Usuarios"
+                    />
 
 
-<section className="flex flex-col items-center">
+                    <AllUsersComponent />
+                </section>
 
-  <img 
-    src="/images/pendingComics.png" 
-    className="max-w-[60vw] pt-12 pb mx-auto" 
-    alt="PENDING-COMICS"
-  />
-  <AllPendingComicsComponent />
-</section>
 
-<section className="flex flex-col items-center">
+                <section className="flex flex-col items-center">
 
-  <img 
-    src="/images/comicsBtn.png" 
-    className="max-w-[23vw] pt-12 pb mx-auto" 
-    alt="COMICS"
-  />
-  <AllComicsComponent />
-</section>
+                    <img
+                        src="/images/pendingComics.png"
+                        className="max-w-[60vw] pt-12 pb mx-auto"
+                        alt="PENDING-COMICS"
+                    />
+                    <AllPendingComicsComponent />
+                </section>
 
-{membershipType === 'creator' && (
-  <section className="">
-    <img src="/images/contenidoSubido.png" className="max-w-lg flex ml-auto mr-auto pt-12 "/>   
+                <section className="flex flex-col items-center">
 
-    <div className="flex flex-col max-w-9xl flex-wrap pt- items-center">
+                    <img
+                        src="/images/comicsBtn.png"
+                        className="max-w-[23vw] pt-12 pb mx-auto"
+                        alt="COMICS"
+                    />
+                    <AllComicsComponent />
+                </section>
 
-            <h1 className={`${josefin.variable} font-sans 
+                {membershipType === 'creator' && (
+                    <section className="">
+                        <img src="/images/contenidoSubido.png" className="max-w-lg flex ml-auto mr-auto pt-12 " />
+
+                        <div className="flex flex-col max-w-9xl flex-wrap pt- items-center">
+
+                            <h1 className={`${josefin.variable} font-sans 
                 text-6xl text-rose-800 max-w-[60vw] text-center pb-6
     `}>AÚN NO HAS SUBIDO COMICS!</h1>
 
-    <button type="button" onClick={() => router.push('/upload')}>
-                <img src="/images/subirExample.png" alt="añadir"
-                className="subir w-96
-                duration-500 hover:scale-105 cursor-pointer pb-5 "/>
-    <h1 className={`${josefin.variable} font-sans text-center`}>AÑADE MÁS CONTENIDO!</h1>
-    </button>
-    </div>   
+                            <button type="button" onClick={() => router.push('/upload')}>
+                                <img src="/images/subirExample.png" className="max-w-md flex ml-auto mr-auto pt-6 hover:animate-bounce" />
+                            </button>
+                        </div>
 
-    {userComics.length > 0 && (
-      <div className="flex flex-row flex-wrap justify-center mt-20 w-screen">
-        {userComics.map((comic, index) => (
-          <div key={index} className="flex flex-col items-center mb-8 mx-6">
-            <div
-              className="relative p-2 border-4 border-red-800 border-opacity-60 shadow-lg w-72 h-96 cursor-pointer overflow-hidden rounded-2xl"
-              onClick={() => router.push(`/all-comics/${comic.id}`)}
-            >
-              <div className="absolute inset-0 flex items-center justify-center ">
-                {images[comic.id]?.[0] && (
-                  <img
-                    src={images[comic.id][0].secure_url}
-                    alt={images[comic.id][0].public_id}
-                    className="w-72 h-96 object-cover object-center p-4"
-                  />
+                    </section>
                 )}
-              </div>
-              <div className="opacity-0 absolute inset-0 flex flex-col justify-center items-center p-4 bg-black bg-opacity-0 hover:opacity-100 hover:bg-opacity-70 rounded-xl duration-300">
-                <p className={`${bebas.variable} text-center mt-4 text-lg font-bold uppercase`}>
-                  {comic.description}
-                </p>
-              </div>
-            </div>
-            <p className="text-lg text-gray-400">{comic.categoryname}</p>
-            <h1 className={`${bebas.variable} font-sans text-3xl font-bold mt-2 w-72 text-center text-yellow-400 `}>
-              {comic.title}
-            </h1>
-            <p className={`${bebas.variable} font-sans text-2xl text-white`}>{comic.author}</p>
-            <p className={`${bebas.variable} text-lg font-bold uppercase text-rose-700`}>{comic.data_post}</p>
-          </div>
-        ))}
-      </div>
-    )}
-  </section>
-)}
 
+            </main>
 
-<section className="pb-24">
-    <img src="/images/contenidoSubido.png" className="max-w-lg flex ml-auto mr-auto pt-12 pb-10 "/>   
-
-    <div className="flex flex-col max-w-9xl flex-wrap pt- items-center">
-
-            <h1 className={`${josefin.variable} font-sans 
-                text-6xl text-rose-800 max-w-[60vw] text-center pb-6
-    `}>AÚN NO HAS SUBIDO COMICS!</h1>
-
-    <button type="button" onClick={() => router.push('/upload')}>
-                <img src="/images/subirExample.png" alt="añadir"
-                className="subir w-96
-                duration-500 hover:scale-105 cursor-pointer pb-5 "/>
-    <h1 className={`${josefin.variable} font-sans text-center`}>AÑADE MÁS CONTENIDO!</h1>
-    </button>
-    </div>   
-
-    {userComics.length > 0 && (
-      <div className="flex flex-row flex-wrap justify-center mt-20 w-screen">
-        {userComics.map((comic, index) => (
-          <div key={index} className="flex flex-col items-center mb-8 mx-6">
-            <div
-              className="relative p-2 border-4 border-red-800 border-opacity-60 shadow-lg w-72 h-96 cursor-pointer overflow-hidden rounded-2xl"
-              onClick={() => router.push(`/all-comics/${comic.id}`)}
-            >
-              <div className="absolute inset-0 flex items-center justify-center ">
-                {images[comic.id]?.[0] && (
-                  <img
-                    src={images[comic.id][0].secure_url}
-                    alt={images[comic.id][0].public_id}
-                    className="w-72 h-96 object-cover object-center p-4"
-                  />
-                )}
-              </div>
-              <div className="opacity-0 absolute inset-0 flex flex-col justify-center items-center p-4 bg-black bg-opacity-0 hover:opacity-100 hover:bg-opacity-70 rounded-xl duration-300">
-                <p className={`${bebas.variable} text-center mt-4 text-lg font-bold uppercase`}>
-                  {comic.description}
-                </p>
-              </div>
-            </div>
-            <p className="text-lg text-gray-400">{comic.categoryname}</p>
-            <h1 className={`${bebas.variable} font-sans text-3xl font-bold mt-2 w-72 text-center text-yellow-400 `}>
-              {comic.title}
-            </h1>
-            <p className={`${bebas.variable} font-sans text-2xl text-white`}>{comic.author}</p>
-            <p className={`${bebas.variable} text-lg font-bold uppercase text-rose-700`}>{comic.data_post}</p>
-          </div>
-        ))}
-      </div>
-    )}
-  </section>
-
-{/* PARA TODOS LOS USERS: */}
-<section className="">
-<img src="/images/biblioteca.png" className="max-w-sm flex  ml-auto mr-auto pt-2 "/>
-
-<div className="flex flex-col max-w-9xl flex-wrap pt-10 items-center ">
-
-<h1 className={`${josefin.variable} font-sans 
-            text-6xl text-rose-800 max-w-[60vw] text-center pb-6
-`}>AÚN NO HAS AÑADIDO COMICS!</h1>
-
-<button type="button" onClick={() => router.push('/home')}>
-            <img src="/images/subirExample.png" alt="añadir"
-            className="subir w-96
-            duration-500 hover:scale-105 cursor-pointer pb-5 "/>
-<h1 className={`${josefin.variable} font-sans text-center`}>DESCUBRE MÁS CONTENIDO!</h1>
-</button>
-</div>   
-
-</section>                           
-
-</main>
-
-        )}
-
-        <ProfilePictureModal isOpen={isModalOpen} onClose={handleCloseModal} onImageSelect={handleImageSelect} handleUpload={handleUpload} />
+            {isModalOpen && (
+                <ProfilePictureModal
+                    isOpen={isModalOpen}
+                    onClose={handleCloseModal}
+                    onSelectImage={handleImageSelect}
+                    onUpload={handleUpload}
+                />
+            )}
 
         </div>
-    )
+    );
 }
