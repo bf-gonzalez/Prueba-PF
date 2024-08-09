@@ -151,7 +151,7 @@ export default function dashboard() {
             text-4xl text-rose-800
             self-center pb-6
             `}>
-  {membershipType === 'monthly_member' ? 'Miembro Mensual' : membershipType === 'annual_member' ? 'Miembro Anual' : 'CREADOR'}
+  {membershipType === 'monthly_member' ? 'Miembro Mensual' : membershipType === 'annual_member' ? 'Miembro Anual' : membershipType === 'creator' ? 'CREADOR' : 'Miembro sin membresía'}
 </p>
 <h1 className={`${josefin.variable} font-sans 
             text-5xl text-white pb-1
@@ -161,7 +161,7 @@ export default function dashboard() {
             
             `}> {userName} </h2>
 
-{membershipType === 'creator' && (
+{['monthly_member', 'annual_member', 'creator'].includes(membershipType) && (
   <section className="flex flex-row space-x-12 self-center pt-6">
     <p className={`${bebas.variable} font-sans 
                 text-3xl text-yellow-400 max-w-96

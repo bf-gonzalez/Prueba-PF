@@ -21,19 +21,21 @@ const AllComicsPage = () => {
   const [images, setImages] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [comicsPerPage] = useState(8); // Número de cómics por página
-  const [searchQuery, setSearchQuery] = useState(localStorage.getItem('searchQuery') || '');
-  const [dateOrder, setDateOrder] = useState<'newest' | 'oldest'>(localStorage.getItem('dateOrder') || 'newest');
-  const [categoryFilter, setCategoryFilter] = useState<string[]>(JSON.parse(localStorage.getItem('categoryFilter')) || []);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [dateOrder, setDateOrder] = useState<'newest' | 'oldest'>('newest');
+  const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    const savedSearchQuery = localStorage.getItem('searchQuery');
-    const savedDateOrder = localStorage.getItem('dateOrder');
-    const savedCategoryFilter = localStorage.getItem('categoryFilter');
+    if (typeof window !== 'undefined') {
+      const savedSearchQuery = localStorage.getItem('searchQuery');
+      const savedDateOrder = localStorage.getItem('dateOrder');
+      const savedCategoryFilter = localStorage.getItem('categoryFilter');
 
-    if (savedSearchQuery) setSearchQuery(savedSearchQuery);
-    if (savedDateOrder) setDateOrder(savedDateOrder);
-    if (savedCategoryFilter) setCategoryFilter(JSON.parse(savedCategoryFilter));
+      if (savedSearchQuery) setSearchQuery(savedSearchQuery);
+      if (savedDateOrder) setDateOrder(savedDateOrder);
+      if (savedCategoryFilter) setCategoryFilter(JSON.parse(savedCategoryFilter));
+    }
 
     const fetchComics = async () => {
       try {
@@ -80,17 +82,23 @@ const AllComicsPage = () => {
 
   const handleSearch = (query) => {
     setSearchQuery(query.toLowerCase());
-    localStorage.setItem('searchQuery', query.toLowerCase());
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('searchQuery', query.toLowerCase());
+    }
   };
 
   const handleFilterChange = (order) => {
     setDateOrder(order);
-    localStorage.setItem('dateOrder', order);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('dateOrder', order);
+    }
   };
 
   const handleCategoryChange = (categories) => {
     setCategoryFilter(categories);
-    localStorage.setItem('categoryFilter', JSON.stringify(categories));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('categoryFilter', JSON.stringify(categories));
+    }
   };
 
   const filteredComics = comics
@@ -129,11 +137,8 @@ const AllComicsPage = () => {
         <div className="flex flex-row flex-wrap justify-center mt-20 w-screen">
           {currentComics.map((comic, index) => (
             <div key={index} className="flex flex-col items-center mb-8 mx-6">
-              <div 
-                className="relative p-2 border-4 border-red-800 border-opacity-60 shadow-lg w-72 h-96 cursor-pointer overflow-hidden rounded-2xl"
-                onClick={() => handleComicClick(comic.id)}
-              >
-                <div className="absolute inset-0 flex items-center justify-center ">
+              <div className="relative p-2 border-4 border-red-800 border-opacity-60 shadow-lg w-72 h-96 cursor-pointer overflow-hidden rounded-2xl" onClick={() => handleComicClick(comic.id)}>
+                <div className="absolute inset-0 flex items-center justify-center">
                   {images[comic.id]?.[0] && (
                     <img 
                       src={images[comic.id][0].secure_url} 
@@ -144,6 +149,14 @@ const AllComicsPage = () => {
                 </div>
                 <div className="opacity-0 absolute inset-0 flex flex-col justify-center items-center p-4 bg-black bg-opacity-0 hover:opacity-100 hover:bg-opacity-70 rounded-xl duration-300">
                   <p className={`${bebas.variable} text-center mt-4 text-lg font-bold uppercase`}>{comic.description}</p>
+                </div>
+              </div>
+              <div className="flex justify-between w-72 mt-2">
+                <div className="p-2 text-lg font-bold text-rose-700 border border-rose-700 border-opacity-60 rounded-tl-lg rounded-br-lg uppercase">
+                  {comic.typecomic}
+                </div>
+                <div className="p-2 text-lg font-bold text-rose-700 border border-rose-700 border-opacity-60 rounded-tr-lg rounded-bl-lg uppercase">
+                  {comic.idioma}
                 </div>
               </div>
               <p className="text-lg text-gray-400">{comic.categoryname}</p>

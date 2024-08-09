@@ -177,6 +177,14 @@ const ComicDetailPage = () => {
               <p className={`${bebas.variable} font-sans text-4xl text-rose-700 pr-3`}>Fecha de publicación:</p>
               <p className={`${bebas.variable} font-sans text-4xl text-white`}>{comic.data_post}</p>
             </div>
+            <div className='flex flex-row'>
+              <p className={`${bebas.variable} font-sans text-4xl text-rose-700 pr-3`}>Tipo de Cómic:</p>
+              <p className={`${bebas.variable} font-sans text-4xl text-white`}>{comic.typecomic || 'N/A'}</p>
+            </div>
+            <div className='flex flex-row'>
+              <p className={`${bebas.variable} font-sans text-4xl text-rose-700 pr-3`}>Idioma:</p>
+              <p className={`${bebas.variable} font-sans text-4xl text-white`}>{comic.idioma || 'N/A'}</p>
+            </div>
             {isLimitedUser && (
               <p className={`${bebas.variable} font-sans text-4xl text-yellow-400 text-center mt-16`}>
                 Para disfrutar de este contenido compra una subscripción!

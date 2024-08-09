@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import styles from '../../components/regularBackground/RegularBackground.module.css';
 import ImageUpload from '@/components/ImageUpload';
 import { UserContext } from '@/context/userContext';
+import CategorySelector from '@/components/ImageUploadHelper/CategorySelector';
 
 export default function UploadPage() {
   const [folderName, setFolderName] = useState('');
@@ -12,6 +13,7 @@ export default function UploadPage() {
   const { user } = useContext(UserContext);
   const router = useRouter();
   const [uploadMode, setUploadMode] = useState('single'); // Estado para manejar el modo de subida
+  const [categories, setCategories] = useState({ categories: [], typeComic: null, language: null });
 
   const handleComicDataChange = (data) => {
     setComicData(data);
@@ -21,6 +23,11 @@ export default function UploadPage() {
     setFolderName('');
     setDescription('');
     setComicData(null);
+    setCategories({ categories: [], typeComic: null, language: null });
+  };
+
+  const handleCategoryChange = (selectedCategories) => {
+    setCategories(selectedCategories);
   };
 
   return (
@@ -41,35 +48,45 @@ export default function UploadPage() {
               Subir Carpeta
             </button>
           </div>
-          <input 
-            type="text" 
-            placeholder="Nombre del Cómic" 
-            value={folderName} 
-            onChange={(e) => setFolderName(e.target.value)} 
-            className="py-2 px-4 border-2 rounded-lg text-white border-rose-800 bg-black bg-opacity-30"
-          />
-          <textarea
-            placeholder="Descripción del Cómic"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="py-2 px-4 border-2 rounded-lg text-white border-rose-800 bg-black bg-opacity-30 "
-            maxLength={256}
-          />
-          <div className="text-right text-sm text-gray-500">{description.length}/256</div>
-          <ImageUpload 
-            folderName={folderName} 
-            description={description} 
-            onComicDataChange={handleComicDataChange} 
-            onUploadSuccess={resetFields} // Cambio aquí
-            uploadMode={uploadMode} // Pasar el modo de subida al componente ImageUpload
-          />
+          <div className="w-full mb-4">
+            <input 
+              type="text" 
+              placeholder="Nombre del Cómic" 
+              value={folderName} 
+              onChange={(e) => setFolderName(e.target.value)} 
+              className="py-2 px-4 border-2 rounded-lg text-white border-rose-800 bg-black bg-opacity-30 w-full"
+            />
+          </div>
+          <div className="w-full mb-4">
+            <textarea
+              placeholder="Descripción del Cómic"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="py-2 px-4 border-2 rounded-lg text-white border-rose-800 bg-black bg-opacity-30 resize-none overflow-y-auto h-32 w-full"
+              maxLength={256}
+            />
+            <div className="text-right text-sm text-gray-500">{description.length}/256</div>
+          </div>
         </div>
         {comicData && (
           <div className="mt-4 p-4 border rounded bg-gray-100">
-            <h3 className="text-lg font-bold">Objeto enviado al backend:</h3>
+            <h3 className="text-lg font-bold">Objeto enviado al backend:</h3> 
             <pre className="text-sm">{JSON.stringify(comicData, null, 2)}</pre>
           </div>
         )}
+      </div>
+      <div className="w-full mb-4 flex flex-col items-center">
+        <CategorySelector onChange={handleCategoryChange} />
+      </div>
+      <div className="w-full mb-4 flex flex-col items-center">
+        <ImageUpload 
+          folderName={folderName} 
+          description={description} 
+          onComicDataChange={handleComicDataChange} 
+          onUploadSuccess={resetFields} 
+          uploadMode={uploadMode} 
+          categories={categories}
+        />
       </div>
     </main>
   );

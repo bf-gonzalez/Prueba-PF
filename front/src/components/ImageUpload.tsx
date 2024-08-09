@@ -2,20 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ImagePreview from './ImageUploadHelper/ImagePreview';
-import CategorySelector from './ImageUploadHelper/CategorySelector';
 import { uploadImages } from './ImageUploadHelper/uploadImages';
 import { FaRegPlusSquare, FaFolderPlus } from "react-icons/fa";
 import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useRouter } from 'next/navigation';
 
-const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSuccess, uploadMode }) => {
+const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSuccess, uploadMode, categories }) => {
   const [images, setImages] = useState<(File | null)[]>([]);
   const [imageUrls, setImageUrls] = useState<(string | null)[]>([]);
   const [previewUrls, setPreviewUrls] = useState<(string | null)[]>([]);
   const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState('');
-  const [categories, setCategories] = useState<string[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -34,10 +32,6 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
       const previewUrlsArray = filesArray.map(file => URL.createObjectURL(file));
       setPreviewUrls((prevUrls) => [...prevUrls, ...previewUrlsArray]);
     }
-  };
-
-  const handleCategoryChange = (selectedCategories) => {
-    setCategories(selectedCategories);
   };
 
   const handleMoveLeft = (index) => {
@@ -83,7 +77,9 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
           author: username,
           data_post: new Date().toISOString().split('T')[0],
           folderName: `${folderName} @${userName}`,
-          categoryname: categories.join(', ')
+          categoryname: categories.categories.map(cat => cat.value).join(', '),
+          typecomic: categories.typeComic ? categories.typeComic.value : null,
+          idioma: categories.language ? categories.language.value : null,
         };
 
         onComicDataChange(comicData);
@@ -122,7 +118,7 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
 
   return (
     <div>
-      <div className="flex flex-wrap">
+      <div className="w-full mb-4 flex flex-wrap">
         <ImagePreview 
           previewUrls={previewUrls} 
           handleMoveLeft={handleMoveLeft} 
@@ -141,8 +137,7 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
           <span className="text-sm text-gray-400 mt-2">{images.length === 0 ? 'Portada' : `Página ${images.length}`}</span>
         </div>
       </div>
-      <div className="mt-4 flex flex-col items-center">
-        <CategorySelector onChange={handleCategoryChange} />
+      <div className="w-full mb-4 flex flex-col items-center">
         <button onClick={handleUpload} className="mt-4 px-4 py-2 bg-[#F5C702] text-gray-800 rounded hover:bg-blue-700 hover:text-white transition-colors duration-300">Subir Cómic</button>
       </div>
     </div>

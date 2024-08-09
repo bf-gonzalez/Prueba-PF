@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 
@@ -11,6 +11,20 @@ export const categoryOptions: readonly CategoryOption[] = [
   { value: 'accion', label: 'Acción' },
   { value: 'romance', label: 'Romance' },
   { value: 'comedia', label: 'Comedia' },
+];
+
+const typeComicOptions: readonly CategoryOption[] = [
+  { value: 'comic_americano', label: 'Comic Americano' },
+  { value: 'manga', label: 'Manga' },
+  { value: 'comic_latinoamericano', label: 'Comic Latinoamericano' },
+];
+
+const languageOptions: readonly CategoryOption[] = [
+  { value: 'espanol', label: 'Español' },
+  { value: 'ingles', label: 'Inglés' },
+  { value: 'japones', label: 'Japónes' },
+  { value: 'frances', label: 'Fránces' },
+  { value: 'italiano', label: 'Italiano' },
 ];
 
 const animatedComponents = makeAnimated();
@@ -56,20 +70,63 @@ const customStyles = {
 };
 
 const CategorySelector = ({ onChange }) => {
-  const handleChange = (selectedOptions) => {
-    const selectedCategories = selectedOptions.map(option => option.value);
-    onChange(selectedCategories);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedTypeComic, setSelectedTypeComic] = useState(null);
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
+
+  const handleCategoryChange = (selectedOptions) => {
+    setSelectedCategories(selectedOptions);
+    onChange({
+      categories: selectedOptions,
+      typeComic: selectedTypeComic,
+      language: selectedLanguage,
+    });
+  };
+
+  const handleTypeComicChange = (selectedOption) => {
+    setSelectedTypeComic(selectedOption);
+    onChange({
+      categories: selectedCategories,
+      typeComic: selectedOption,
+      language: selectedLanguage,
+    });
+  };
+
+  const handleLanguageChange = (selectedOption) => {
+    setSelectedLanguage(selectedOption);
+    onChange({
+      categories: selectedCategories,
+      typeComic: selectedTypeComic,
+      language: selectedOption,
+    });
   };
 
   return (
-    <Select
-      closeMenuOnSelect={false}
-      components={animatedComponents}
-      isMulti
-      options={categoryOptions}
-      styles={customStyles}
-      onChange={handleChange}
-    />
+    <div>
+      <Select
+        closeMenuOnSelect={false}
+        components={animatedComponents}
+        isMulti
+        options={categoryOptions}
+        styles={customStyles}
+        placeholder="Selecciona categorías"
+        onChange={handleCategoryChange}
+      />
+      <Select
+        options={typeComicOptions}
+        styles={customStyles}
+        placeholder="Selecciona tipo de comic"
+        onChange={handleTypeComicChange}
+        isClearable
+      />
+      <Select
+        options={languageOptions}
+        styles={customStyles}
+        placeholder="Selecciona lenguaje"
+        onChange={handleLanguageChange}
+        isClearable
+      />
+    </div>
   );
 };
 
