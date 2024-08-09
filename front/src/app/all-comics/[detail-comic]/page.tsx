@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import styles from "@/components/backgrounds/experiment.module.css";
 import { Bebas_Neue, Josefin_Sans } from 'next/font/google';
+import Swal from 'sweetalert2';
 
 const josefin = Josefin_Sans({
   subsets: ['latin'],
@@ -111,7 +112,16 @@ const ComicDetailPage = () => {
   const handleCommentSubmit = async () => {
     const user = JSON.parse(localStorage.getItem('decodedUser'));
     if (!user || !user.id) {
-      console.error('User not found in localStorage');
+      Swal.fire({
+        icon: 'warning',
+        title: 'No estás logueado',
+        text: 'Por favor, inicia sesión para poder enviar un comentario.',
+        confirmButtonText: 'OK',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push('/login');
+        }
+      });
       return;
     }
 
