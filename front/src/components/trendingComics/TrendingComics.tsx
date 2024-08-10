@@ -21,7 +21,7 @@ function TrendingComics() {
     useEffect(() => {
         const fetchComics = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/comics');
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics`);
                 const allComics = response.data;
                 const randomComics = getRandomComics(allComics, 5); // Obtener 5 cómics aleatorios
                 setComics(randomComics);
@@ -40,7 +40,7 @@ function TrendingComics() {
 
         const fetchImages = async (folderName, comicId) => {
             try {
-                const response = await axios.get(`/api/images?folder=${folderName}`);
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/images?folder=${folderName}`);
                 setImages(prevImages => ({ ...prevImages, [comicId]: response.data }));
             } catch (error) {
                 console.error('Error fetching images:', error);

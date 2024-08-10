@@ -4,7 +4,7 @@ export const postRegister = async (user: Omit<IUser, "id">) => {
   console.log('Datos enviados al backend:', user);
   
   try {
-    const response = await fetch("http://localhost:3000/auth/signup", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),
@@ -30,7 +30,7 @@ export const postGoogleRegister = async (user: Omit<IUser, "id">) => {
   console.log('Datos enviados al backend:', user);
   
   try {
-    const response = await fetch("http://localhost:3000/auth/signupGoogle", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signupGoogle`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),
@@ -54,7 +54,7 @@ export const postGoogleRegister = async (user: Omit<IUser, "id">) => {
 
 export const postLogin = async (credentials: ILoginUser) => {
   try {
-    const response = await fetch("http://localhost:3000/auth/signin", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(credentials),
@@ -74,7 +74,7 @@ export const postLogin = async (credentials: ILoginUser) => {
 
 export async function createMembership(data: MembershipData): Promise<void> {
   try {
-    const response = await fetch('http://localhost:3000/membership/prueba', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/membership/prueba`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

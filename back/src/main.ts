@@ -8,6 +8,7 @@ import stripe = require('stripe');
 process.env.STRIPE_SECRET;
 
 const corsOptions: CorsOptions = {
+
   origin: '*', //Aca va la conexion con el front
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 };
@@ -24,7 +25,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.use(loggerGlobal);
-  app.enableCors();
+  app.enableCors(corsOptions);
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
