@@ -7,8 +7,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     
     const session = await stripe.checkout.sessions.create({
-        success_url: "http://localhost:3001/success",
-        cancel_url: "http://localhost:3001/cancel",
+        success_url: "https://comiccraft.vercel.app/success",
+        cancel_url: "https://comiccraft.vercel.app/cancel",
         line_items: [
             {
                 price_data: {
