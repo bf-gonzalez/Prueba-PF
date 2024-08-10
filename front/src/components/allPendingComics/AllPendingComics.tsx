@@ -45,7 +45,7 @@ const AllPendingComicsComponent: React.FC = () => {
 
     const fetchComics = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/comics/inactive');
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics/inactive`);
         setComics(response.data);
         console.log("Fetched Comics:", response.data);
         response.data.forEach((comic: any) => {

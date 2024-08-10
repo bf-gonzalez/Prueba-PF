@@ -8,7 +8,7 @@ export default function SearchComic() {
 
     const fetchComics = async (author) => {
         try {
-            const response = await fetch('http://localhost:3000/comics');
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/comics`);
             const allComics = await response.json();
             const filteredComics = allComics.filter(c => c.author === author);
             setComics(filteredComics);

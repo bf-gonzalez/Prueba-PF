@@ -68,7 +68,7 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
 
     if (allUploaded) {
       try {
-        const userResponse = await axios.get(`http://localhost:3000/users/${userId}`);
+        const userResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`);
         const username = userResponse.data.username;
 
         const comicData = {
@@ -84,7 +84,7 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
 
         onComicDataChange(comicData);
 
-        await axios.post(`http://localhost:3000/comics/${userId}`, comicData);
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/${userId}`, comicData);
 
         Swal.fire({
           position: 'center',

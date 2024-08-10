@@ -43,7 +43,7 @@ export default function dashboard() {
           setMembershipType(user.MembershipType);
 
           // Fetch user data from backend
-          axios.get(`http://localhost:3000/users/${user.id}`)
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}`)
             .then(response => {
               const userData = response.data;
               setProfilePicture(userData.profilePicture === "none" ? "/images/userIcon2.png" : userData.profilePicture);
@@ -53,7 +53,7 @@ export default function dashboard() {
             });
 
           // Fetch user comics
-          axios.get("http://localhost:3000/comics")
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics`)
             .then(response => {
               const comics = response.data;
               const userComics = comics.filter(comic => comic.user.id === user.id);
@@ -106,7 +106,7 @@ export default function dashboard() {
           // Guardar la URL en el backend
           const decodedToken = JSON.parse(localStorage.getItem("decodedToken"));
           const userId = decodedToken.id;
-          await axios.put(`http://localhost:3000/users/${userId}/profile-picture`, {
+          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/profile-picture`, {
             profilePicture: imageUrl
           });
 
@@ -122,7 +122,7 @@ export default function dashboard() {
     useEffect(() => {
       
       const fetchUsers = () => {
-        axios.get("http://localhost:3000/users")
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users`)
           .then(response => {
             const usersData = response.data; 
             setUsers(usersData); 

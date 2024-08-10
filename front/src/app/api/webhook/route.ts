@@ -32,7 +32,7 @@ export async function POST(request: Request) {
 
      
       try {
-        const response = await fetch("http://localhost:3000/membership", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/membership`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

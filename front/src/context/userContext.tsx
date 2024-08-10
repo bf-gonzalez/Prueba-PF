@@ -98,7 +98,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                 const decodedUser = JSON.parse(decodedUserStr);
                 const userId = decodedUser.id;
 
-                const response = await fetch(`http://localhost:3000/users/token/${userId}`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/token/${userId}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
