@@ -18,8 +18,8 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('decodedUser'));
-    if (user && user.name && user.id) {
-      setUserName(user.name);
+    if (user && user.username && user.id) {
+      setUserName(user.username); // Cambiado a user.username
       setUserId(user.id);
     }
   }, []);
@@ -76,7 +76,7 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
           description: description,
           author: username,
           data_post: new Date().toISOString().split('T')[0],
-          folderName: `${folderName} @${userName}`,
+          folderName: `${folderName} @${userName}`, // Cambiado a userName
           categoryname: categories.categories.map(cat => cat.value).join(', '),
           typecomic: categories.typeComic ? categories.typeComic.value : null,
           idioma: categories.language ? categories.language.value : null,
@@ -84,7 +84,7 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
 
         onComicDataChange(comicData);
 
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/${userId}`, comicData);
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/comics/${userId}`, comicData);
 
         Swal.fire({
           position: 'center',

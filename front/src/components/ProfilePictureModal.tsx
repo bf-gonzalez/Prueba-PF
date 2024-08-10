@@ -29,12 +29,12 @@ const ProfilePictureModal = ({ isOpen, onClose, onImageSelect }) => {
       const decodedUser = JSON.parse(localStorage.getItem("decodedUser"));
       const userId = decodedUser.id;
 
-      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/${userId}/profile-picture`, {
+      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/profile-picture`, {
         url: imageUrl
       });
 
       Swal.fire({
-        icon: 'success',
+        icon: 'success',  
         title: 'Foto de perfil actualizada',
         showConfirmButton: false,
         timer: 1500

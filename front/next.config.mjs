@@ -6,7 +6,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  async rewrites() {
+    async rewrites() {
     return [
       {
         source: '/api/:path*',

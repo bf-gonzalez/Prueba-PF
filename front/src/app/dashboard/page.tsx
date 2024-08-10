@@ -78,7 +78,6 @@ export default function dashboard() {
         }
     };
 
-
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
@@ -116,7 +115,6 @@ export default function dashboard() {
         }
     };
 
-
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
@@ -134,8 +132,6 @@ export default function dashboard() {
   
       fetchUsers(); 
     }, []);
-
-    
 
     return (
         <div className={styles.fondo}>
@@ -175,24 +171,14 @@ export default function dashboard() {
 </div>
 
 <div className="flex flex-col items-center">
-{user.profilePicture === "none" ? (
-                <img
-                src= "/images/userIcon2.png"
-                className="w-64 h-64 rounded-xl object-cover object-center border-4 border-rose-800"
-                alt={`${user.username} Profile Picture`}
-                />
-                ) : (
-                  <img
-                  src={user.profilePicture || "/images/userIcon2.png"}
-                  className="w-64 h-64 rounded-xl object-cover object-center border-4 border-rose-800"
-                  alt={`${user.username} Profile Picture`}
-                />
-                )
-                }        
-<button onClick={handleOpenModal}>
-<p className={`${josefin.variable} font-sans uppercase text-white max-w-60 hover:text-blue-500 duration-300 self-center text-3xl pt-10`}>Cambiar foto de perfil</p>
-</button>
-
+    <img
+        src={profilePicture || "/images/userIcon2.png"}
+        className="w-64 h-64 rounded-xl object-cover object-center border-4 border-rose-800"
+        alt={`${userName} Profile Picture`}
+    />
+    <button onClick={handleOpenModal}>
+        <p className={`${josefin.variable} font-sans uppercase text-white max-w-60 hover:text-blue-500 duration-300 self-center text-3xl pt-10`}>Cambiar foto de perfil</p>
+    </button>
 </div>
 
 </section>
@@ -208,7 +194,6 @@ export default function dashboard() {
 
   <AllUsersComponent />
 </section> */}
-
 
 {/* EXCLUSIVO PARA ADMINISTRADORES  */}
 {/* <section className="flex flex-col items-center">
