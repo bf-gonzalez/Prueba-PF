@@ -16,7 +16,7 @@ const CreatorDetailPage = () => {
         const fetchCreatorData = async () => {
             try {
                 // Obtener datos del usuario directamente
-                const userResponse = await fetch(`http://localhost:3000/users/${id}`);
+                const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`);
                 const userData = await userResponse.json();
 
                 // Verificar si el usuario tiene una membresía de tipo "creator"

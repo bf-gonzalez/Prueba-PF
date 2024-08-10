@@ -42,7 +42,7 @@ const ComicDetailPage = () => {
     if (detailComic) {
       const fetchComic = async () => {
         try {
-          const response = await axios.get(`http://localhost:3000/comics/${detailComic}`);
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics/${detailComic}`);
           setComic(response.data);
           setLoading(false);
 
@@ -54,8 +54,8 @@ const ComicDetailPage = () => {
 
           const commentsWithUsernames = await Promise.all(
             response.data.comment.map(async (comment) => {
-              const commentResponse = await axios.get(`http://localhost:3000/comment/${comment.id}`);
-              const userResponse = await axios.get(`http://localhost:3000/users/${commentResponse.data.user.id}`);
+              const commentResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comment/${comment.id}`);
+              const userResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${commentResponse.data.user.id}`);
               return {
                 ...comment,
                 username: commentResponse.data.user.username,
@@ -81,7 +81,7 @@ const ComicDetailPage = () => {
   useEffect(() => {
     const fetchTopComics = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/comics?limit=5');
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics?limit=5`);
         setTopComics(response.data);
       } catch (error) {
         console.error('Error fetching top comics:', error);
@@ -93,7 +93,7 @@ const ComicDetailPage = () => {
 
   const fetchImages = async (folderName) => {
     try {
-      const response = await axios.get(`/api/images?folder=${folderName}`);
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/images?folder=${folderName}`);
       setImages(response.data);
     } catch (error) {
       console.error('Error fetching images:', error);
@@ -131,7 +131,7 @@ const ComicDetailPage = () => {
     };
 
     try {
-      const response = await axios.post(`http://localhost:3000/comment/${detailComic}`, commentData);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/comment/${detailComic}`, commentData);
       setNewComment('');
       setComments([...comments, {
         id: response.data.id,
@@ -272,7 +272,7 @@ const ComicDetailPage = () => {
                     />
                   ) : (
                     <img
-                      src={`/api/images?folder=${comic.folderName}`}
+                      src={`${process.env.NEXT_PUBLIC_API_URL}/api/images?folder=${comic.folderName}`}
                       alt={comic.title}
                       className="w-72 h-96 object-cover object-center p-4"
                     />

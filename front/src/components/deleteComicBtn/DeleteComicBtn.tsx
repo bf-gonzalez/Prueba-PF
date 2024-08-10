@@ -37,7 +37,7 @@ function DeleteComicButton({ comicId }) {
   
     await handleActionWithConfirmation(async () => {
       try {
-        const response = await axios.put(`http://localhost:3000/comics/activate/${comicId}`);
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/comics/activate/${comicId}`);
         console.log('Comic borrado con éxito!:', response.data);
       } catch (error) {
         console.error('Error borrando el comic:', error);

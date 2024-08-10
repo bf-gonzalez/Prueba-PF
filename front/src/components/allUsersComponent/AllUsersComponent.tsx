@@ -47,7 +47,7 @@ const AllUsersComponent: React.FC = () => {
 
     const fetchUsers = () => {
       axios
-        .get("http://localhost:3000/users")
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/users`)
         .then((response) => {
           const usersData = response.data;
           setUsers(usersData);

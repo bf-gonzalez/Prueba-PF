@@ -37,7 +37,7 @@ function BanUserButton({ userId }) {
   
     await handleActionWithConfirmation(async () => {
       try {
-        const response = await axios.put(`http://localhost:3000/users/deleted/${userId}`);
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/users/deleted/${userId}`);
         console.log('Useario Baneado con éxito!:', response.data);
       } catch (error) {
         console.error('Error banenado al usuario:', error);

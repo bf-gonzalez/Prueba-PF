@@ -29,7 +29,7 @@ export default function comicListRectangles2 () {
   useEffect(() => {
     const fetchComics = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/comics');
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics`);
         setComics(response.data);
         console.log("Fetched Comics:", response.data)
         response.data.forEach(comic => {
@@ -47,7 +47,7 @@ export default function comicListRectangles2 () {
 
     const fetchImages = async (folderName, comicId) => {
       try {
-        const response = await axios.get(`/api/images?folder=${folderName}`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/images?folder=${folderName}`);
         setImages(prevImages => ({ ...prevImages, [comicId]: response.data }));
       } catch (error) {
         console.error('Error fetching images:', error);
