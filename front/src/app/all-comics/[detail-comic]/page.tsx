@@ -93,7 +93,7 @@ const ComicDetailPage = () => {
 
   const fetchImages = async (folderName) => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/images?folder=${folderName}`);
+      const response = await axios.get(`/api/images?folder=${folderName}`);
       setImages(response.data);
     } catch (error) {
       console.error('Error fetching images:', error);
@@ -272,7 +272,7 @@ const ComicDetailPage = () => {
                     />
                   ) : (
                     <img
-                      src={`${process.env.NEXT_PUBLIC_API_URL}/api/images?folder=${comic.folderName}`}
+                      src={`/api/images?folder=${comic.folderName}`}
                       alt={comic.title}
                       className="w-72 h-96 object-cover object-center p-4"
                     />

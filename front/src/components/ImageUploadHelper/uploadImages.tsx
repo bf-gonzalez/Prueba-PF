@@ -18,7 +18,7 @@ export const uploadImages = async (images, folderName, userName, imageUrls, setI
     const formData = new FormData();
     formData.append('file', images[i]);
     formData.append('upload_preset', 'ml_default');
-    const fullFolderName = `${folderName} @${userName}`;
+    const fullFolderName = `${folderName} @${userName}`; // Changed to use userName instead of name
     formData.append('folder', fullFolderName);
     formData.append('public_id', `${fullFolderName}/${i + 1}`);
 
