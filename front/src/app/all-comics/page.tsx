@@ -129,7 +129,7 @@ const AllComicsPage = () => {
     <main className={styles.fondo}>
       <section className="flex flex-col items-center pt-36 pb-40 ">
         <div className="flex flex-col self-start pl-12">
-          <SearchBar onSearch={handleSearch} initialQuery={searchQuery} />
+          <SearchBar onSearch={handleSearch} initialQuery={searchQuery} placeholder={'Buscar Comics'} />
           <CategoryFilter onCategoryChange={handleCategoryChange} initialCategories={categoryFilter} />
           <DateFilter onFilterChange={handleFilterChange} initialOrder={dateOrder} />
         </div>

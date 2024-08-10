@@ -3,6 +3,7 @@ import { Bebas_Neue } from "next/font/google"
 import { usePathname, useRouter } from "next/navigation"
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/userContext";
+
 import Swal from 'sweetalert2';
 
 const  bebas = Bebas_Neue({
@@ -12,8 +13,9 @@ const  bebas = Bebas_Neue({
 });
 
 function Navbar() {
-    const {isLogged, logOut} = useContext(UserContext);
+    const {isLogged, logOut, user} = useContext(UserContext);
     const [membershipType, setMembershipType] = useState<string | null>(null);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
     
     const router = useRouter();
     const pathname = usePathname();
@@ -23,6 +25,9 @@ function Navbar() {
         if (decodedUser) {
             const user = JSON.parse(decodedUser);
             setMembershipType(user.MembershipType);
+
+            const adminUsername = "ComiCraft2024";
+            setIsAdmin(user.username === adminUsername);
         }
     }, []);
 
@@ -83,7 +88,7 @@ function Navbar() {
                 </button>
                 )}
 
-                {pathname !== '/all-comics' && pathname === 'profile-complete' && (
+                {pathname !== '/all-comics' && pathname !== 'profile-complete' && (
                     <button type="button" onClick={() => router.push('/all-comics')}>
                     <h1 className={`${bebas.variable} font-sans 
                 login cursor-pointer
@@ -124,6 +129,15 @@ function Navbar() {
                     login cursor-pointer
                     text-4xl text-white hover:text-yellow-400
                     transition-all custom-transition duration-300`}>PERFIL</h1>
+                    </button>
+                )}
+
+                {pathname !== '/adm-dshb' && isAdmin &&  (
+                    <button type="button" onClick={() => router.push('/adm-dshb')}>
+                        <h1 className={`${bebas.variable} font-sans 
+                    login cursor-pointer
+                    text-4xl text-white hover:text-yellow-400
+                    transition-all custom-transition duration-300`}>PANEL_ADMIN.</h1>
                     </button>
                 )}
 

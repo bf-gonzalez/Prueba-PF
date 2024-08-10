@@ -10,7 +10,7 @@ const bebas = Bebas_Neue({
 });
 
 const handleActionWithConfirmation = async (actionFn) => {
-  const confirmed = window.confirm("¿Estás seguro de que deseas bloquear a este usuario?");
+  const confirmed = window.confirm("¿Estás seguro de que deseas desbloquear a este usuario?");
   if (confirmed) {
     try {
       await actionFn();
@@ -21,7 +21,7 @@ const handleActionWithConfirmation = async (actionFn) => {
   }
 };
 
-function BanUserButton({ userId }) {
+function UnBanUserButton({ userId }) {
 
   const isValidUUID = (id) => {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -29,7 +29,7 @@ function BanUserButton({ userId }) {
   };
 
 
-  const handleBanUser = async () => {
+  const handleUnBanUser = async () => {
     if (!isValidUUID(userId)) {
       console.error('Invalid UUID:', userId);
       return;
@@ -38,9 +38,9 @@ function BanUserButton({ userId }) {
     await handleActionWithConfirmation(async () => {
       try {
         const response = await axios.put(`http://localhost:3000/users/deleted/${userId}`);
-        console.log('Useario Baneado con éxito!:', response.data);
+        console.log('Useario Desbloqueado con éxito!:', response.data);
       } catch (error) {
-        console.error('Error banenado al usuario:', error);
+        console.error('Error Desbloqueando al usuario:', error);
       }
     });
   };
@@ -51,14 +51,14 @@ function BanUserButton({ userId }) {
     <>
       <button
         type="button"
-        onClick={handleBanUser}
+        onClick={handleUnBanUser}
         className={`${bebas.variable} font-sans bg-red-700 text-black uppercase w-[10vw] h-[10vh] rounded-2xl text-2xl flex flex-col items-center border-black border-2 hover:text-white hover:scale-105 hover:border-white duration-300 self-center`}
       >
-        BLOQUEAR USUARIO
+        DESBLOQUEAR USUARIO
         <GoAlert className='size-[3vw]' />
       </button>
     </>
   );
 }
 
-export default BanUserButton;
+export default UnBanUserButton;
