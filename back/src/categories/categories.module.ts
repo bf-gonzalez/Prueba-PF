@@ -14,6 +14,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { CreateUserDto } from 'src/users/dto/users.dto';
 import { UsersService } from 'src/users/users.service';
 import { MembershipModule } from 'src/membership/membership.module';
+import { Role } from 'src/enum/role.enum';
 
 @Module({
   imports: [
@@ -36,7 +37,6 @@ export class CategoriesModule implements OnModuleInit {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly authService: AuthService,
-    private readonly categoriesService: CategoriesService,
     private readonly comicsService: ComicsService,
   ) {}
 
@@ -61,10 +61,8 @@ export class CategoriesModule implements OnModuleInit {
       return;
     }
 
-    await this.authService.signUp(mainUser);
-    const createdUser = await this.usersRepository.getUserByEmail(
-      mainUser.email,
-    );
+    const createdUser = await this.authService.signUp(mainUser);
+    await this.usersRepository.updateUserRole(createdUser.id, [Role.Admin]);
     await this.comicsService.addComics(createdUser.id);
   }
 }

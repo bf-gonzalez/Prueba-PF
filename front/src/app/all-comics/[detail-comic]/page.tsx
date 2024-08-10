@@ -1,16 +1,17 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import styles from "@/components/backgrounds/experiment.module.css";
 import { Bebas_Neue, Josefin_Sans } from 'next/font/google';
+import Swal from 'sweetalert2';
 
 const josefin = Josefin_Sans({
-  subsets:['latin'],
+  subsets: ['latin'],
   weight: ['600'],
   variable: '--font-josefin',
-})
+});
 
 const bebas = Bebas_Neue({
   subsets: ["latin"],
@@ -54,9 +55,14 @@ const ComicDetailPage = () => {
           const commentsWithUsernames = await Promise.all(
             response.data.comment.map(async (comment) => {
               const commentResponse = await axios.get(`http://localhost:3000/comment/${comment.id}`);
+              const userResponse = await axios.get(`http://localhost:3000/users/${commentResponse.data.user.id}`);
               return {
                 ...comment,
                 username: commentResponse.data.user.username,
+                user: {
+                  ...commentResponse.data.user,
+                  profilePicture: userResponse.data.profilePicture || "/images/defaultProfile.png",
+                },
               };
             })
           );
@@ -106,7 +112,16 @@ const ComicDetailPage = () => {
   const handleCommentSubmit = async () => {
     const user = JSON.parse(localStorage.getItem('decodedUser'));
     if (!user || !user.id) {
-      console.error('User not found in localStorage');
+      Swal.fire({
+        icon: 'warning',
+        title: 'No estás logueado',
+        text: 'Por favor, inicia sesión para poder enviar un comentario.',
+        confirmButtonText: 'OK',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push('/login');
+        }
+      });
       return;
     }
 
@@ -123,6 +138,7 @@ const ComicDetailPage = () => {
         content: response.data.content,
         created_at: response.data.created_at,
         username: response.data.user.username,
+        user: response.data.user,
       }]);
     } catch (error) {
       console.error('Error posting comment:', error);
@@ -144,11 +160,11 @@ const ComicDetailPage = () => {
       <section className="pt-36 flex flex-col items-center p-4 ">
         <div className="flex flex-row pb-16 ">
           {images.length > 0 && (
-            <img 
-              src={images[0].secure_url} 
-              alt={comic.title} 
-              className=" ml-auto rounded-xl border-2 h-[72vh] border-rose-900 p-2 object-cover object-center w-[24vw]" 
-              height={350} 
+            <img
+              src={images[0].secure_url}
+              alt={comic.title}
+              className=" ml-auto rounded-xl border-2 h-[72vh] border-rose-900 p-2 object-cover object-center w-[24vw]"
+              height={350}
             />
           )}
           <div className="self-center w-[50vw] ml-20">
@@ -156,7 +172,12 @@ const ComicDetailPage = () => {
             <p className={`${josefin.variable} font-sans text-4xl text-white pb-14 pt-6 text-center uppercase`}>{comic.description}</p>
             <div className='flex flex-row'>
               <p className={`${bebas.variable} font-sans text-4xl text-rose-700 pr-3`}>Autor:</p>
-              <p className={`${bebas.variable} font-sans text-4xl text-white`}>{comic.author}</p>
+              <button
+                className={`${bebas.variable} font-sans text-4xl text-white hover:text-yellow-400 duration-300`}
+                onClick={() => router.push(`/creator/${comic.user.id}`)}
+              >
+                {comic.author}
+              </button>
             </div>
             <div className='flex flex-row'>
               <p className={`${bebas.variable} font-sans text-4xl text-rose-700 pr-3`}>Categoria:</p>
@@ -165,6 +186,14 @@ const ComicDetailPage = () => {
             <div className='flex flex-row'>
               <p className={`${bebas.variable} font-sans text-4xl text-rose-700 pr-3`}>Fecha de publicación:</p>
               <p className={`${bebas.variable} font-sans text-4xl text-white`}>{comic.data_post}</p>
+            </div>
+            <div className='flex flex-row'>
+              <p className={`${bebas.variable} font-sans text-4xl text-rose-700 pr-3`}>Tipo de Cómic:</p>
+              <p className={`${bebas.variable} font-sans text-4xl text-white`}>{comic.typecomic || 'N/A'}</p>
+            </div>
+            <div className='flex flex-row'>
+              <p className={`${bebas.variable} font-sans text-4xl text-rose-700 pr-3`}>Idioma:</p>
+              <p className={`${bebas.variable} font-sans text-4xl text-white`}>{comic.idioma || 'N/A'}</p>
             </div>
             {isLimitedUser && (
               <p className={`${bebas.variable} font-sans text-4xl text-yellow-400 text-center mt-16`}>
@@ -177,11 +206,11 @@ const ComicDetailPage = () => {
           <div className={`mt-4 grid grid-cols-10 gap-2 border-2 border-yellow-400 border-opacity-60 p-2 rounded-xl`}>
             {images.map((image, index) => (
               <div key={index} className="relative">
-                <img 
-                  src={image.secure_url} 
-                  alt={`Comic image ${index + 1}`} 
-                  className={`w-[10vw] h-[28vh] cursor-pointer ${isLimitedUser && index >= 2 ? 'blur-sm' : ''}`} 
-                  onClick={() => !isLimitedUser && router.push(`/upload/${comic.folderName}?page=${index + 1}`)} 
+                <img
+                  src={image.secure_url}
+                  alt={`Comic image ${index + 1}`}
+                  className={`w-[10vw] h-[28vh] cursor-pointer ${isLimitedUser && index >= 2 ? 'blur-sm' : ''}`}
+                  onClick={() => !isLimitedUser && router.push(`/upload/${comic.folderName}?page=${index + 1}`)}
                 />
                 <div className="absolute bottom-0 right-0 bg-black bg-opacity-50 text-white px-2 py-1 rounded-tl">
                   {index + 1}
@@ -208,37 +237,44 @@ const ComicDetailPage = () => {
           {comments.length > 0 ? (
             comments.map((comment) => (
               <div key={comment.id} className="mb-4 p-4 border-2 border-rose-900 rounded bg-[#01061A]">
+                <div className="flex items-center mb-2">
+                  <img
+                    src={comment.user.profilePicture || "/images/defaultProfile.png"}
+                    alt="Profile Picture"
+                    className="w-8 h-8 rounded-full mr-2"
+                  />
+                  <p className="text-sm text-gray-500">{comment.username}</p>
+                </div>
                 <p>{comment.content}</p>
                 <p className="text-sm text-gray-500">Fecha: {new Date(comment.created_at).toLocaleDateString()}</p>
-                <p className="text-sm text-gray-500">Usuario: {comment.username}</p>
               </div>
             ))
           ) : (
             <p className='text-center text-3xl pt-8'>No hay comentarios aún.</p>
           )}
         </div>
-        <img src= "/images/masComics.png"
-              className="max-w-sm ml-auto mr-auto pb-4 "
-              height={400} />
+        <img src="/images/masComics.png"
+          className="max-w-sm ml-auto mr-auto pb-4 "
+          height={400} />
         <div className="flex flex-row flex-wrap justify-center mt-20 w-screen">
           {topComics.slice(0, 8).map((comic, index) => (
             <div key={index} className="flex flex-col items-center mb-8 mx-6">
-              <div 
+              <div
                 className="relative p-2 border-4 border-red-800 border-opacity-60 shadow-lg w-72 h-96 cursor-pointer overflow-hidden rounded-2xl"
                 onClick={() => router.push(`/all-comics/${comic.id}`)}
               >
                 <div className="absolute inset-0 flex items-center justify-center ">
                   {comic.folderName.startsWith('http') ? (
-                    <img 
-                      src={comic.folderName} 
-                      alt={comic.title} 
-                      className="w-72 h-96 object-cover object-center p-4" 
+                    <img
+                      src={comic.folderName}
+                      alt={comic.title}
+                      className="w-72 h-96 object-cover object-center p-4"
                     />
                   ) : (
-                    <img 
-                      src={`/api/images?folder=${comic.folderName}`} 
-                      alt={comic.title} 
-                      className="w-72 h-96 object-cover object-center p-4" 
+                    <img
+                      src={`/api/images?folder=${comic.folderName}`}
+                      alt={comic.title}
+                      className="w-72 h-96 object-cover object-center p-4"
                     />
                   )}
                 </div>

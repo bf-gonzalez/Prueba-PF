@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -14,21 +13,25 @@ const bebas = Bebas_Neue({
 
 export default function Success() {
     const router = useRouter();
-    const { logOut } = useContext(UserContext);
+    const { updateToken } = useContext(UserContext);
 
     useEffect(() => {
+        const fetchAndUpdateToken = async () => {
+            await updateToken();
+        };
+
+        fetchAndUpdateToken();
         
-        logOut();
-    }, [logOut]);
+    }, []);
 
     const handleGoHome = () => {
-        router.push('/login');
-    }
+        router.push('/home');
+    };
 
     return (
         <main className={styles.fondo}>
             <div className="flex h-screen items-center justify-end">
-                <div className="bg-custom-transparent shadow-md rounded px-8 pt-6 pb-8 mb-4 mr-8"> {/* Ajusta mr-8 para el margen derecho */}
+                <div className="bg-custom-transparent shadow-md rounded px-8 pt-6 pb-8 mb-4 mr-8"> 
                     <div className={`${bebas.variable} font-sans 
                         login cursor-pointer
                         text-4xl text-white hover:text-yellow-400
@@ -39,7 +42,7 @@ export default function Success() {
                         onClick={handleGoHome}
                         className="mt-4 px-4 py-2 transition-all duration-300"
                     >
-                        Volver a iniciar sesión
+                        Volver al inicio
                     </button>
                 </div>
             </div>

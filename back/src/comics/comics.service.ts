@@ -16,6 +16,14 @@ export class ComicsService {
     return this.comicsRepository.getAllComics(page, limit);
   }
 
+  getInactiveComics(page?: number, limit?: number) {
+    return this.comicsRepository.getInactiveComics(page, limit);
+  }
+
+  getActiveComics(page?: number, limit?: number) {
+    return this.comicsRepository.getActiveComics(page, limit);
+  }
+
   getComicById(id: string) {
     return this.comicsRepository.getComicById(id);
   }
@@ -24,12 +32,24 @@ export class ComicsService {
     return this.comicsRepository.getComicByTitle(title);
   }
 
+  getComicByIdioma(idioma: string){
+    return this.comicsRepository.getComicByIdioma(idioma);
+  }
+  
+  getComicByType(typecomic: string){
+    return this.comicsRepository.getComicByTyoe(typecomic);
+  }
+
   createComic(id: string, comic: Partial<Comics>) {
     return this.comicsRepository.createComic(id, comic);
   }
 
   updatedComic(id: string, comic: Comics) {
     return this.comicsRepository.updateComic(id, comic);
+  }
+
+  activateComics(id: string) {
+    return this.comicsRepository.activateComics(id);
   }
 
   deleteComic(id: string) {

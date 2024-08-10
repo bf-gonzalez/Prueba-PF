@@ -102,6 +102,7 @@ export interface IComic {
     signUp: (user: Omit<IRegisterUser, "id">)=> Promise<boolean>,
     signUpGoogle: (user: Omit<IRegisterUser, "id">)=> Promise<boolean>,
     logOut: () => void,
+    updateToken: () => Promise<void>,
   }
 
   export interface MembershipOption {

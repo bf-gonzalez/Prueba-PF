@@ -7,8 +7,12 @@ import { Role } from 'src/enum/role.enum';
 export class UsersService {
   constructor(private readonly userRepository: UsersRepository) {}
 
-  getUsers(page: number, limit: number) {
+  getUsers(page?: number, limit?: number) {
     return this.userRepository.getUsers(page, limit);
+  }
+
+  getDeletedUsers(page?: number, limit?: number) {
+    return this.userRepository.getDeletedUsers(page, limit);
   }
 
   getUserById(id: string) {
@@ -19,7 +23,7 @@ export class UsersService {
     return this.userRepository.getUserByName(name);
   }
 
-  updateUser(id: string, user: Users) {
+  updateUser(id: string, user: Partial<Users>) {
     return this.userRepository.updateUser(id, user);
   }
 
@@ -37,5 +41,9 @@ export class UsersService {
 
   async updateProfilePicture(id: string, url: string) {
     return this.userRepository.updateProfilePicture(id, url);
+  }
+
+  async getUserToken(id: string) {
+    return this.userRepository.getUserToken(id);
   }
 }

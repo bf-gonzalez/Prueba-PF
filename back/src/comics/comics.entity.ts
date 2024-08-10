@@ -58,7 +58,27 @@ export class Comics {
     type: 'varchar',
     nullable: true,
   })
-  categoryname: string
+  categoryname: string;
+
+  /**
+   * Es el tipo de comic ya sea manga,occidental,etc
+   * @example "Manga"
+   */
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  typecomic: string;
+
+  /**
+   * Es el idioma del comic Ej. ingles,español,etc
+   * @example "Ingles"
+   */
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  idioma: string
 
   /**
    * Es de tipo varchar, puede usar hasta 50 caracteres no puede ser null
@@ -79,6 +99,9 @@ export class Comics {
     nullable: false,
   })
   folderName: string;
+
+  @Column({ type: 'boolean', default: false })
+  isActive: boolean;
 
   @ManyToOne(() => Users, (user) => user.comics, {
     eager: true,

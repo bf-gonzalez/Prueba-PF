@@ -1,7 +1,18 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/events.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('events')
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
@@ -22,7 +33,10 @@ export class EventsController {
   }
 
   @Put(':id')
-  updateEvent(@Param('id', ParseUUIDPipe) id: string, @Body() updateEventDto: CreateEventDto) {
+  updateEvent(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateEventDto: CreateEventDto,
+  ) {
     return this.eventsService.updateEvent(id, updateEventDto);
   }
 

@@ -15,6 +15,10 @@ export class MembershipService {
     return this.membershipsRepository.getMerberships();
   }
 
+  getDeletedMemberships() {
+    return this.membershipsRepository.getDeletedMemberships();
+  }
+
   getMembershipById(id: string) {
     return this.membershipsRepository.getMembershipById(id);
   }

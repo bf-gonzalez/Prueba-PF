@@ -15,6 +15,8 @@ import { CommentModule } from './comment/comment.module';
 import { EventsModule } from './events/events.module';
 
 import { ChatsModule } from './chats/chats.module';
+import { CronService } from './cron/cron.service';
+import { MailerService } from './mailer/mailer.service';
 
 
 @Module({
@@ -46,6 +48,7 @@ import { ChatsModule } from './chats/chats.module';
 
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CronService, MailerService],
+  exports: [CronService],
 })
 export class AppModule {}

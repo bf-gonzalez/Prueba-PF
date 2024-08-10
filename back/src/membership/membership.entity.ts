@@ -5,9 +5,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Tipo } from '../enum/type.enum';
 import { Users } from 'src/users/users.entity';
-import { Role } from 'src/enum/role.enum';
 import { MembershipType } from 'src/enum/membership-type.enum';
 
 @Entity()

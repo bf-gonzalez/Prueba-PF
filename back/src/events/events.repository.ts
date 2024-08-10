@@ -16,37 +16,56 @@ export class EventsRepository {
   ) {}
 
   async getEvents(): Promise<Events[]> {
-    return await this.eventsRepository.find();
+    try {
+      return await this.eventsRepository.find();
+    } catch (error) {
+      throw new Error(`Error al obtener eventos: ${error.message}`);
+    }
   }
 
   async getEventById(id: string): Promise<Events> {
-    return await this.eventsRepository.findOneBy({ id });
+    try {
+      return await this.eventsRepository.findOneBy({ id });
+    } catch (error) {
+      throw new Error(`Error al obtener el evento con ID ${id}: ${error.message}`);
+    }
   }
 
-  async createEvent(createEventDto:CreateEventDto){
-    const event = this.eventsRepository.create(createEventDto);
-    const savedEvent = await this.eventsRepository.save(event);
+  async createEvent(createEventDto: CreateEventDto) {
+    try {
+      const event = this.eventsRepository.create(createEventDto);
+      const savedEvent = await this.eventsRepository.save(event);
 
-    const formattedEvent = {...savedEvent,date: savedEvent.date.toISOString().split('T')[0],};
-  
-    
-    return formattedEvent
+      const formattedEvent = { ...savedEvent, date: savedEvent.date.toISOString().split('T')[0] };
+
+      return formattedEvent;
+    } catch (error) {
+      throw new Error(`Error al crear el evento: ${error.message}`);
+    }
   }
 
   async updateEvent(
     id: string,
     updateEventDto: CreateEventDto,
   ): Promise<Events> {
-    await this.eventsRepository.update(id, updateEventDto);
-    return await this.eventsRepository.findOneBy({ id });
+    try {
+      await this.eventsRepository.update(id, updateEventDto);
+      return await this.eventsRepository.findOneBy({ id });
+    } catch (error) {
+      throw new Error(`Error al actualizar el evento con ID ${id}: ${error.message}`);
+    }
   }
 
   async deleteEvent(id: string): Promise<Events> {
-    const event = await this.eventsRepository.findOneBy({ id });
-    if (event) {
-      await this.eventsRepository.remove(event);
-      return event;
+    try {
+      const event = await this.eventsRepository.findOneBy({ id });
+      if (event) {
+        await this.eventsRepository.remove(event);
+        return event;
+      }
+      return null;
+    } catch (error) {
+      throw new Error(`Error al eliminar el evento con ID ${id}: ${error.message}`);
     }
-    return null;
   }
 }

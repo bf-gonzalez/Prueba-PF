@@ -7,6 +7,10 @@ import { useContext, useEffect, useState } from "react";
 import styles from "@/components/backgrounds/experiment.module.css";
 import ProfilePictureModal from '@/components/ProfilePictureModal';
 import axios from 'axios';
+import decodeGJwt from "@/utils/decodeGJWT";
+import BanUserButton from "@/components/banUserBtn/BanUserBtn";
+import AllComicsComponent from "../../components/allComicsComponent/AllComicsComponent";
+import AllUsersComponent from "@/components/allUsersComponent/AllUsersComponent";
 
 const josefin = Josefin_Sans({
     subsets:['latin'],
@@ -74,6 +78,7 @@ export default function dashboard() {
         }
     };
 
+
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
@@ -111,6 +116,27 @@ export default function dashboard() {
         }
     };
 
+
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+      
+      const fetchUsers = () => {
+        axios.get("http://localhost:3000/users")
+          .then(response => {
+            const usersData = response.data; 
+            setUsers(usersData); 
+          })
+          .catch(error => {
+            console.error("Error fetching users:", error); 
+          });
+      };
+  
+      fetchUsers(); 
+    }, []);
+
+    
+
     return (
         <div className={styles.fondo}>
 
@@ -120,22 +146,22 @@ export default function dashboard() {
 
 <section className="flex flex-row-reverse justify-evenly items-center">
 
-<div className="flex flex-col flex-wrap max-w-screen-xl items-end ">
+<div className="flex flex-col flex-wrap max-w-screen-xl items-center text-wrap  ">
 <p className={`${bebas.variable} font-sans 
             text-4xl text-rose-800
             self-center pb-6
             `}>
-  {membershipType === 'monthly_member' ? 'Miembro Mensual' : membershipType === 'annual_member' ? 'Miembro Anual' : 'CREADOR'}
+  {membershipType === 'monthly_member' ? 'Miembro Mensual' : membershipType === 'annual_member' ? 'Miembro Anual' : membershipType === 'creator' ? 'CREADOR' : 'Miembro sin membresía'}
 </p>
 <h1 className={`${josefin.variable} font-sans 
-            text-7xl text-white pb-1
+            text-5xl text-white pb-1
             `}>BIENVENIDO/A</h1>
 <h2 className={`${josefin.variable} font-sans 
-            text-7xl text-white uppercase self-center
+            text-5xl text-white uppercase self-center
             
             `}> {userName} </h2>
 
-{membershipType === 'creator' && (
+{['monthly_member', 'annual_member', 'creator'].includes(membershipType) && (
   <section className="flex flex-row space-x-12 self-center pt-6">
     <p className={`${bebas.variable} font-sans 
                 text-3xl text-yellow-400 max-w-96
@@ -149,22 +175,57 @@ export default function dashboard() {
 </div>
 
 <div className="flex flex-col items-center">
-{/* SUSTITUIR H1 POR EL BOTÓN DE SUBIR ARCHIVO:                    */}
-<img src={profilePicture || "/images/userIcon2.png"} className="w-32 h-32 rounded-full object-cover pb-8" />  
-
+{user.profilePicture === "none" ? (
+                <img
+                src= "/images/userIcon2.png"
+                className="w-64 h-64 rounded-xl object-cover object-center border-4 border-rose-800"
+                alt={`${user.username} Profile Picture`}
+                />
+                ) : (
+                  <img
+                  src={user.profilePicture || "/images/userIcon2.png"}
+                  className="w-64 h-64 rounded-xl object-cover object-center border-4 border-rose-800"
+                  alt={`${user.username} Profile Picture`}
+                />
+                )
+                }        
 <button onClick={handleOpenModal}>
-<p className={`${josefin.variable} font-sans uppercase text-white max-w-60 hover:text-blue-500 duration-300 self-center text-3xl`}>Cambiar foto de perfil</p>
+<p className={`${josefin.variable} font-sans uppercase text-white max-w-60 hover:text-blue-500 duration-300 self-center text-3xl pt-10`}>Cambiar foto de perfil</p>
 </button>
 
 </div>
 
 </section>
 
+{/* EXCLUSIVO PARA ADMINISTRADORES  */}
+{/* <section className="flex flex-col items-center">
+
+  <img 
+    src="/images/usuariosAsset.png" 
+    className="max-w-[23vw] pt-12 pb-16 mx-auto" 
+    alt="Usuarios"
+  />
+
+  <AllUsersComponent />
+</section> */}
+
+
+{/* EXCLUSIVO PARA ADMINISTRADORES  */}
+{/* <section className="flex flex-col items-center">
+
+  <img 
+    src="/images/comicsBtn.png" 
+    className="max-w-[23vw] pt-12 pb mx-auto" 
+    alt="COMICS"
+  />
+  <AllComicsComponent />
+</section> */}
+
 {membershipType === 'creator' && (
   <section className="">
     <img src="/images/contenidoSubido.png" className="max-w-lg flex ml-auto mr-auto pt-12 "/>   
 
-    <div className="flex flex-col max-w-9xl flex-wrap pt-10 items-center">
+    <div className="flex flex-col max-w-9xl flex-wrap pt- items-center">
 
             <h1 className={`${josefin.variable} font-sans 
                 text-6xl text-rose-800 max-w-[60vw] text-center pb-6
@@ -216,7 +277,7 @@ export default function dashboard() {
 
 {/* PARA TODOS LOS USERS: */}
 <section className="">
-<img src="/images/biblioteca.png" className="max-w-sm flex  ml-auto mr-auto pt-48 "/>
+<img src="/images/biblioteca.png" className="max-w-sm flex  ml-auto mr-auto pt-2 "/>
 
 <div className="flex flex-col max-w-9xl flex-wrap pt-10 items-center ">
 

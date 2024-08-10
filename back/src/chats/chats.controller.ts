@@ -1,6 +1,8 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { ChatsService } from './chats.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('chats')
 @Controller('chats')
 export class ChatsController {
     constructor (private readonly chatService: ChatsService){}

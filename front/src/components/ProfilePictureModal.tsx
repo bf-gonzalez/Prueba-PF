@@ -30,7 +30,7 @@ const ProfilePictureModal = ({ isOpen, onClose, onImageSelect }) => {
       const userId = decodedUser.id;
 
       await axios.put(`http://localhost:3000/users/${userId}/profile-picture`, {
-        profilePicture: imageUrl
+        url: imageUrl
       });
 
       Swal.fire({
@@ -66,6 +66,6 @@ const ProfilePictureModal = ({ isOpen, onClose, onImageSelect }) => {
       <button onClick={handleSaveProfilePicture} className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 transition-colors duration-300">Guardar</button>
     </div>
   );
-}
+};
 
 export default ProfilePictureModal;

@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 interface SearchBarProps {
   onSearch: (query: string) => void;
   initialQuery: string;
+  placeholder: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch, initialQuery }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch, initialQuery, placeholder }) => {
   const [query, setQuery] = useState(initialQuery);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,10 +24,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, initialQuery }) => {
         type="text"
         value={query}
         onChange={handleInputChange}
-        placeholder="Buscar cómics"
+        placeholder={placeholder} // Usa la propiedad placeholder aquí
         className="py-2 px-4 border-2 rounded-lg text-white border-rose-800 bg-transparent rounded-r-none"
       />
-      <button type="submit" className=" pl-6 py-2 px-4 bg-yellow-400 text-black uppercase rounded-lg rounded-l-none">
+      <button type="submit" className="pl-6 py-2 px-4 bg-yellow-400 text-black uppercase rounded-lg rounded-l-none">
         Buscar
       </button>
     </form>

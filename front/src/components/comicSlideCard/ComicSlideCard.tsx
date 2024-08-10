@@ -49,16 +49,16 @@ function ComicSlideCard({ comic }: IComicProps) {
                 <div className="relative">
                     <img
                         src={imageUrl}
-                        alt={comic.name}
+                        alt={comic.title}
                         className="rounded-xl border-2 h-[70vh] w-48 object-cover object-center border-blue-700 border-opacity-70 p-2"
                         height={600}
                     />
 
-                    <div className="opacity-0 absolute inset-0 flex flex-col justify-end items-center p-4 bg-black bg-opacity-0 hover:opacity-100 hover:bg-opacity-50 rounded-xl duration-300">
+                    <div className="opacity-0 absolute inset-0 flex flex-col justify-center items-center p-4 bg-black bg-opacity-0 hover:opacity-100 hover:bg-opacity-50 rounded-xl duration-300">
                         <h2 className={`${bebas.variable} font-sans text-4xl text-yellow-400`}>
-                            {comic.name}
+                            {comic.title}
                         </h2>
-                        <p className={`${bebas.variable} font-sans text-sm text-rose-600`}>
+                        <p className={`${bebas.variable} font-sans text-lg text-rose-600`}>
                             {comic.author}
                         </p>
                     </div>
