@@ -33,7 +33,6 @@ export const Register = () => {
         const { name, value } = e.target;
         setSignUp({ ...signUpValues, [name]: value });
 
-        
         const fieldErrors = validateRegister({ ...signUpValues, [name]: value });
         setErrors(prevErrors => ({
             ...prevErrors,
@@ -54,10 +53,10 @@ export const Register = () => {
                 confirmPassword: signUpValues.confirmPassword,
                 name: signUpValues.name,
                 address: signUpValues.address,
-                phone: Number(signUpValues.phone),  
+                phone: Number(signUpValues.phone),
                 dob: signUpValues.dob,
             };
-            console.log('Datos del formulario:', user);
+
             try {
                 const success = await signUp(user);
 
@@ -65,18 +64,23 @@ export const Register = () => {
                     Swal.fire({
                         icon: "success",
                         title: "Bienvenido",
-                        text: "Disfrute de lo mejor!",
+                        text: "Disfruta de lo mejor!",
                     });
                     router.push("/home");
                 } else {
                     Swal.fire({
                         icon: "error",
                         title: "Oops...",
-                        text: "Tus Credenciales no son correctas!",
+                        text: "Ya existe una cuenta con este email.",
                     });
                 }
             } catch (error) {
                 console.error("Error durante el registro:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Hubo un problema con el registro. Por favor, inténtalo de nuevo.",
+                });
             }
         } else {
             setErrors(validationErrors);
@@ -188,13 +192,12 @@ export const Register = () => {
                     login cursor-pointer
                     text-4xl text-white hover:text-yellow-400
                     transition-all custom-transition duration-300`}>Registrarse</button>
-                <div className="flex flex-col">
-                <p className="ml-12 text-base ">Ya tienes una cuenta?</p>
-                <button type="button"
-                className="text-blue-600 text-base text-end ml-4"
-                onClick={() => router.push('/login')} >Inicia sesión!</button>
-                </div>
-
+                    <div className="flex flex-col">
+                        <p className="ml-12 text-base ">Ya tienes una cuenta?</p>
+                        <button type="button"
+                            className="text-blue-600 text-base text-end ml-4"
+                            onClick={() => router.push('/login')}>Inicia sesión!</button>
+                    </div>
                 </div>
             </form>
         </div>
