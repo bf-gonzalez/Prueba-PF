@@ -24,6 +24,8 @@ const AllComicsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [dateOrder, setDateOrder] = useState<'newest' | 'oldest'>('newest');
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
+  const [typeComicFilter, setTypeComicFilter] = useState<string | null>(null);
+  const [languageFilter, setLanguageFilter] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -31,19 +33,21 @@ const AllComicsPage = () => {
       const savedSearchQuery = localStorage.getItem('searchQuery');
       const savedDateOrder = localStorage.getItem('dateOrder');
       const savedCategoryFilter = localStorage.getItem('categoryFilter');
+      const savedTypeComicFilter = localStorage.getItem('typeComicFilter');
+      const savedLanguageFilter = localStorage.getItem('languageFilter');
 
       if (savedSearchQuery) setSearchQuery(savedSearchQuery);
-      if (savedDateOrder) setDateOrder(savedDateOrder);
-      if (savedCategoryFilter) setCategoryFilter(JSON.parse(savedCategoryFilter));
+      if (savedDateOrder) setDateOrder(savedDateOrder as 'newest' | 'oldest');
+      if (savedCategoryFilter) setCategoryFilter(JSON.parse(savedCategoryFilter) || []);
+      if (savedTypeComicFilter) setTypeComicFilter(JSON.parse(savedTypeComicFilter));
+      if (savedLanguageFilter) setLanguageFilter(JSON.parse(savedLanguageFilter));
     }
 
     const fetchComics = async () => {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics`);
         setComics(response.data);
-        console.log("Fetched Comics:", response.data)
         response.data.forEach(comic => {
-          console.log("FolderName:", comic.folderName)
           if (isValidUrl(comic.folderName)) {
             setImages(prevImages => ({ ...prevImages, [comic.id]: [{ secure_url: comic.folderName }] }));
           } else {
@@ -101,6 +105,20 @@ const AllComicsPage = () => {
     }
   };
 
+  const handleTypeComicChange = (typeComic) => {
+    setTypeComicFilter(typeComic);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('typeComicFilter', JSON.stringify(typeComic));
+    }
+  };
+
+  const handleLanguageChange = (language) => {
+    setLanguageFilter(language);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('languageFilter', JSON.stringify(language));
+    }
+  };
+
   const filteredComics = comics
     .filter(comic => comic.title.toLowerCase().includes(searchQuery.toLowerCase()))
     .map(comic => {
@@ -109,6 +127,8 @@ const AllComicsPage = () => {
     })
     .sort((a, b) => b.categoryMatches - a.categoryMatches)
     .filter(comic => categoryFilter.length === 0 || comic.categoryMatches > 0)
+    .filter(comic => !typeComicFilter || comic.typecomic === typeComicFilter)
+    .filter(comic => !languageFilter || comic.idioma === languageFilter)
     .sort((a, b) => {
       if (dateOrder === 'newest') {
         return new Date(b.data_post) - new Date(a.data_post);
@@ -130,7 +150,14 @@ const AllComicsPage = () => {
       <section className="flex flex-col items-center pt-36 pb-40 ">
         <div className="flex flex-col self-start pl-12">
           <SearchBar onSearch={handleSearch} initialQuery={searchQuery} placeholder={'Buscar Comics'} />
-          <CategoryFilter onCategoryChange={handleCategoryChange} initialCategories={categoryFilter} />
+          <CategoryFilter 
+            onCategoryChange={handleCategoryChange} 
+            initialCategories={categoryFilter} 
+            onTypeComicChange={handleTypeComicChange} 
+            initialTypeComic={typeComicFilter} 
+            onLanguageChange={handleLanguageChange} 
+            initialLanguage={languageFilter} 
+          />
           <DateFilter onFilterChange={handleFilterChange} initialOrder={dateOrder} />
         </div>
                             

@@ -13,13 +13,13 @@ export const categoryOptions: readonly CategoryOption[] = [
   { value: 'comedia', label: 'Comedia' },
 ];
 
-const typeComicOptions: readonly CategoryOption[] = [
+export const typeComicOptions: readonly CategoryOption[] = [
   { value: 'comic_americano', label: 'Comic Americano' },
   { value: 'manga', label: 'Manga' },
   { value: 'comic_latinoamericano', label: 'Comic Latinoamericano' },
 ];
 
-const languageOptions: readonly CategoryOption[] = [
+export const languageOptions: readonly CategoryOption[] = [
   { value: 'espanol', label: 'Español' },
   { value: 'ingles', label: 'Inglés' },
   { value: 'japones', label: 'Japónes' },
