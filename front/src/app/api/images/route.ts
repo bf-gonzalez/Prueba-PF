@@ -6,6 +6,7 @@ export async function GET(req) {
   const folder = searchParams.get('folder');
 
   console.log(`Fetching images for folder: ${folder}`);
+  console.log(`Full URL: ${req.url}`);
 
   try {
     const result = await cloudinary.api.resources({
