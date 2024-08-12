@@ -39,7 +39,7 @@ const AllComicsPage = () => {
 
     const fetchComics = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics/active`);
         setComics(response.data);
         console.log("Fetched Comics:", response.data)
         response.data.forEach(comic => {

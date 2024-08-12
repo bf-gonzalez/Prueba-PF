@@ -1,6 +1,7 @@
 .fondo {
     background-image: url(../../../public//images/experimentBg.jpg);
     background-repeat: repeat-y;
+    background-repeat: repeat-x;
     /* background-size:contain; */
     background-size: contain;
     display: table;
