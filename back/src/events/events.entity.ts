@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
+import { Users } from '../users/users.entity';
 
 @Entity()
 export class Events {
@@ -72,4 +73,8 @@ export class Events {
     nullable: false,
   })
   location: string;
+
+  @ManyToOne(() => Users, (user) => user.events)
+  @JoinColumn({ name: 'user_id' })
+  user: Users;
 }
