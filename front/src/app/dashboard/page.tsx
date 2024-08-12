@@ -160,6 +160,13 @@ export default function dashboard() {
             text-5xl text-white uppercase self-center
             
             `}> {userName} </h2>
+            <a href="http://localhost:3001/newpassword">
+  <h2 className="text-yellow-400 cursor-pointer">cambiar contraseña</h2>
+</a>
+<a href="http://localhost:3001/newusername">
+  <h2 className="text-yellow-400 cursor-pointer">cambiar nombre de usuario</h2>
+</a>
+
 
 {['monthly_member', 'annual_member', 'creator'].includes(membershipType) && (
   <section className="flex flex-row space-x-12 self-center pt-6">
