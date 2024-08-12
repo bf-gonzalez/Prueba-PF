@@ -81,7 +81,7 @@ const ComicDetailPage = () => {
   useEffect(() => {
     const fetchTopComics = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics?limit=5`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics/active?limit=5`);
         setTopComics(response.data);
       } catch (error) {
         console.error('Error fetching top comics:', error);

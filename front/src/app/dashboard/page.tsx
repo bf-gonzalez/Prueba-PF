@@ -211,50 +211,86 @@ export default function dashboard() {
     <img src="/images/contenidoSubido.png" className="max-w-lg flex ml-auto mr-auto pt-12 "/>   
 
     <div className="flex flex-col max-w-9xl flex-wrap pt- items-center">
-
-            <h1 className={`${josefin.variable} font-sans 
-                text-6xl text-rose-800 max-w-[60vw] text-center pb-6
-    `}>AÚN NO HAS SUBIDO COMICS!</h1>
-
-    <button type="button" onClick={() => router.push('/upload')}>
-                <img src="/images/subirExample.png" alt="añadir"
-                className="subir w-96
-                duration-500 hover:scale-105 cursor-pointer pb-5 "/>
-    <h1 className={`${josefin.variable} font-sans text-center`}>AÑADE MÁS CONTENIDO!</h1>
-    </button>
+      <h1 className={`${josefin.variable} font-sans text-6xl text-rose-800 max-w-[60vw] text-center pb-6`}>
+        AÚN NO HAS SUBIDO COMICS!
+      </h1>
+      <button type="button" onClick={() => router.push('/upload')}>
+        <img src="/images/subirExample.png" alt="añadir" className="subir w-96 duration-500 hover:scale-105 cursor-pointer pb-5 "/>
+        <h1 className={`${josefin.variable} font-sans text-center`}>AÑADE MÁS CONTENIDO!</h1>
+      </button>
     </div>   
 
-    {userComics.length > 0 && (
-      <div className="flex flex-row flex-wrap justify-center mt-20 w-screen">
-        {userComics.map((comic, index) => (
-          <div key={index} className="flex flex-col items-center mb-8 mx-6">
-            <div
-              className="relative p-2 border-4 border-red-800 border-opacity-60 shadow-lg w-72 h-96 cursor-pointer overflow-hidden rounded-2xl"
-              onClick={() => router.push(`/all-comics/${comic.id}`)}
-            >
-              <div className="absolute inset-0 flex items-center justify-center ">
-                {images[comic.id]?.[0] && (
-                  <img
-                    src={images[comic.id][0].secure_url}
-                    alt={images[comic.id][0].public_id}
-                    className="w-72 h-96 object-cover object-center p-4"
-                  />
-                )}
+    {userComics.filter(comic => !comic.isActive).length > 0 && (
+      <div>
+        <h2 className={`${josefin.variable} font-sans text-4xl text-rose-800 text-center pt-10`}>Comics Pendientes</h2>
+        <div className="flex flex-row flex-wrap justify-center mt-10 w-screen">
+          {userComics.filter(comic => !comic.isActive).map((comic, index) => (
+            <div key={index} className="flex flex-col items-center mb-8 mx-6">
+              <div
+                className="relative p-2 border-4 border-red-800 border-opacity-60 shadow-lg w-72 h-96 cursor-pointer overflow-hidden rounded-2xl"
+                onClick={() => router.push(`/all-comics/${comic.id}`)}
+              >
+                <div className="absolute inset-0 flex items-center justify-center ">
+                  {images[comic.id]?.[0] && (
+                    <img
+                      src={images[comic.id][0].secure_url}
+                      alt={images[comic.id][0].public_id}
+                      className="w-72 h-96 object-cover object-center p-4"
+                    />
+                  )}
+                </div>
+                <div className="opacity-0 absolute inset-0 flex flex-col justify-center items-center p-4 bg-black bg-opacity-0 hover:opacity-100 hover:bg-opacity-70 rounded-xl duration-300">
+                  <p className={`${bebas.variable} text-center mt-4 text-lg font-bold uppercase`}>
+                    {comic.description}
+                  </p>
+                </div>
               </div>
-              <div className="opacity-0 absolute inset-0 flex flex-col justify-center items-center p-4 bg-black bg-opacity-0 hover:opacity-100 hover:bg-opacity-70 rounded-xl duration-300">
-                <p className={`${bebas.variable} text-center mt-4 text-lg font-bold uppercase`}>
-                  {comic.description}
-                </p>
-              </div>
+              <p className="text-lg text-gray-400">{comic.categoryname}</p>
+              <h1 className={`${bebas.variable} font-sans text-3xl font-bold mt-2 w-72 text-center text-yellow-400 `}>
+                {comic.title}
+              </h1>
+              <p className={`${bebas.variable} font-sans text-2xl text-white`}>{comic.author}</p>
+              <p className={`${bebas.variable} text-lg font-bold uppercase text-rose-700`}>{comic.data_post}</p>
             </div>
-            <p className="text-lg text-gray-400">{comic.categoryname}</p>
-            <h1 className={`${bebas.variable} font-sans text-3xl font-bold mt-2 w-72 text-center text-yellow-400 `}>
-              {comic.title}
-            </h1>
-            <p className={`${bebas.variable} font-sans text-2xl text-white`}>{comic.author}</p>
-            <p className={`${bebas.variable} text-lg font-bold uppercase text-rose-700`}>{comic.data_post}</p>
-          </div>
-        ))}
+          ))}
+        </div>
+      </div>
+    )}
+
+    {userComics.filter(comic => comic.isActive).length > 0 && (
+      <div>
+        <h2 className={`${josefin.variable} font-sans text-4xl text-rose-800 text-center pt-10`}>Comics Aprobados</h2>
+        <div className="flex flex-row flex-wrap justify-center mt-10 w-screen">
+          {userComics.filter(comic => comic.isActive).map((comic, index) => (
+            <div key={index} className="flex flex-col items-center mb-8 mx-6">
+              <div
+                className="relative p-2 border-4 border-red-800 border-opacity-60 shadow-lg w-72 h-96 cursor-pointer overflow-hidden rounded-2xl"
+                onClick={() => router.push(`/all-comics/${comic.id}`)}
+              >
+                <div className="absolute inset-0 flex items-center justify-center ">
+                  {images[comic.id]?.[0] && (
+                    <img
+                      src={images[comic.id][0].secure_url}
+                      alt={images[comic.id][0].public_id}
+                      className="w-72 h-96 object-cover object-center p-4"
+                    />
+                  )}
+                </div>
+                <div className="opacity-0 absolute inset-0 flex flex-col justify-center items-center p-4 bg-black bg-opacity-0 hover:opacity-100 hover:bg-opacity-70 rounded-xl duration-300">
+                  <p className={`${bebas.variable} text-center mt-4 text-lg font-bold uppercase`}>
+                    {comic.description}
+                  </p>
+                </div>
+              </div>
+              <p className="text-lg text-gray-400">{comic.categoryname}</p>
+              <h1 className={`${bebas.variable} font-sans text-3xl font-bold mt-2 w-72 text-center text-yellow-400 `}>
+                {comic.title}
+              </h1>
+              <p className={`${bebas.variable} font-sans text-2xl text-white`}>{comic.author}</p>
+              <p className={`${bebas.variable} text-lg font-bold uppercase text-rose-700`}>{comic.data_post}</p>
+            </div>
+          ))}
+        </div>
       </div>
     )}
   </section>
