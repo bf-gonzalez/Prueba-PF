@@ -61,7 +61,7 @@ const ComicDetailPage = () => {
                 username: commentResponse.data.user.username,
                 user: {
                   ...commentResponse.data.user,
-                  profilePicture: userResponse.data.profilePicture || "/images/defaultProfile.png",
+                  profilePicture: userResponse.data.profilePicture || "/images/userIcon2.png",
                 },
               };
             })
@@ -239,8 +239,8 @@ const ComicDetailPage = () => {
               <div key={comment.id} className="mb-4 p-4 border-2 border-rose-900 rounded bg-[#01061A]">
                 <div className="flex items-center mb-2">
                   <img
-                    src={comment.user.profilePicture || "/images/defaultProfile.png"}
-                    alt="Profile Picture"
+                    src={comment.user.profilePicture || "/images/userIcon2.png"}
+                    alt=""
                     className="w-8 h-8 rounded-full mr-2"
                   />
                   <p className="text-sm text-gray-500">{comment.username}</p>

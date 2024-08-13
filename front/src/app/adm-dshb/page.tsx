@@ -42,14 +42,13 @@ export default function AdminDashboard() {
         const decodedUser = localStorage.getItem("decodedUser");
         if (decodedUser) {
             const user = JSON.parse(decodedUser);
-            setUserName(user.name);
+            setUserName(user.username);
             setMembershipType(user.MembershipType);
-
+    
             
-            const adminUsername = "ComiCraft2024";
-            setIsAdmin(user.username === adminUsername);
-
+            setIsAdmin(user.role.includes("admin"));
             
+    
             axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}`)
                 .then(response => {
                     const userData = response.data;
@@ -58,14 +57,13 @@ export default function AdminDashboard() {
                 .catch(error => {
                     console.error("Error fetching user data:", error);
                 });
-
-
+    
             axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics`)
                 .then(response => {
                     const comics = response.data;
                     const userComics = comics.filter(comic => comic.user.id === user.id);
                     setUserComics(userComics);
-
+    
                     userComics.forEach(comic => {
                         fetchImages(comic.folderName, comic.id);
                     });
@@ -75,6 +73,7 @@ export default function AdminDashboard() {
                 });
         }
     }, []);
+    
 
     const fetchImages = async (folderName, comicId) => {
         try {
@@ -109,7 +108,7 @@ export default function AdminDashboard() {
             const imageUrl = response.data.secure_url;
             setProfilePicture(imageUrl);
 
-            // Guardar la URL en el backend
+            
             const decodedToken = JSON.parse(localStorage.getItem("decodedToken"));
             const userId = decodedToken.id;
             await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/profile-picture`, {
@@ -181,25 +180,15 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="flex flex-col items-center">
-                        {user.profilePicture === "none" ? (
-                            <img
-                                src="/images/userIcon2.png"
-                                className="w-64 h-64 rounded-xl object-cover object-center border-4 border-rose-800"
-                                alt={`${user.username} Profile Picture`}
-                            />
-                        ) : (
-                            <img
-                                src={user.profilePicture || "/images/userIcon2.png"}
-                                className="w-64 h-64 rounded-xl object-cover object-center border-4 border-rose-800"
-                                alt={`${user.username} Profile Picture`}
-                            />
-                        )
-                        }
-                        <button onClick={handleOpenModal}>
-                            <p className={`${josefin.variable} font-sans uppercase text-white max-w-60 hover:text-blue-500 duration-300 self-center text-3xl pt-10`}>Cambiar foto de perfil</p>
-                        </button>
-
-                    </div>
+    <img
+        src={profilePicture || "/images/userIcon2.png"}
+        className="w-64 h-64 rounded-xl object-cover object-center border-4 border-rose-800"
+        alt={`${userName} Profile Picture`}
+    />
+    <button onClick={handleOpenModal}>
+        <p className={`${josefin.variable} font-sans uppercase text-white max-w-60 hover:text-blue-500 duration-300 self-center text-3xl pt-10`}>Cambiar foto de perfil</p>
+    </button>
+</div>
 
                 </section>
 
