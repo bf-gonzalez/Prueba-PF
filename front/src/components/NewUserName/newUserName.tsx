@@ -1,8 +1,10 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 import { Bebas_Neue } from 'next/font/google';
+import { UserContext } from '@/context/userContext';
+
 
 const bebas = Bebas_Neue({
     subsets: ['latin'],
@@ -35,6 +37,7 @@ export const NewUserName: React.FC = () => {
     const [userName, setUserName] = useState('');
     const [message, setMessage] = useState('');
     const router = useRouter(); 
+    const { updateToken } = useContext(UserContext);
 
     const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUserName(e.target.value);
@@ -53,6 +56,7 @@ export const NewUserName: React.FC = () => {
             const userId = decodedUser.id;
             try {
                 await updateUserName(userId, userName);
+                await updateToken();
                 Swal.fire({
                     icon: 'success',
                     title: 'Nombre de usuario actualizado',

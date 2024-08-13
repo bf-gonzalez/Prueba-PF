@@ -48,14 +48,12 @@ export default function UploadPage() {
 
   const showSubscriptionPage = isLogged && (['creator'].includes(membershipType) || isAdmin);
 
-
-
   return (
     <main className={styles.fondo}>
       {!showSubscriptionPage ? (
         <AlertSignIn />
       ) : (
-        <>
+        <section>
           <div className="flex flex-col items-center justify-center mt-48 p-4">
             <div className="flex flex-col items-center">
               <div className="flex space-x-4 mb-4">
@@ -98,21 +96,21 @@ export default function UploadPage() {
                 <pre className="text-sm">{JSON.stringify(comicData, null, 2)}</pre>
               </div>
             )}
+            <div className="w-full mb-4 flex flex-col items-center">
+              <CategorySelector onChange={handleCategoryChange} />
+            </div>
+            <div className="w-full mb-4 flex flex-col items-center">
+              <ImageUpload
+                folderName={folderName}
+                description={description}
+                onComicDataChange={handleComicDataChange}
+                onUploadSuccess={resetFields}
+                uploadMode={uploadMode}
+                categories={categories}
+              />
+            </div>
           </div>
-          <div className="w-full mb-4 flex flex-col items-center">
-            <CategorySelector onChange={handleCategoryChange} />
-          </div>
-          <div className="w-full mb-4 flex flex-col items-center">
-            <ImageUpload
-              folderName={folderName}
-              description={description}
-              onComicDataChange={handleComicDataChange}
-              onUploadSuccess={resetFields}
-              uploadMode={uploadMode}
-              categories={categories}
-            />
-          </div>
-        </>
+        </section>
       )}
     </main>
   );
