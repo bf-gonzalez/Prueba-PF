@@ -4,33 +4,33 @@ import { Role } from 'src/enum/role.enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-	constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector) {}
 
-	canActivate(context: ExecutionContext): boolean {
-		const roles = this.reflector.get<Role[]>('roles', context.getHandler());
-		if (!roles) {
-			return true;
-		}
+  canActivate(context: ExecutionContext): boolean {
+    const roles = this.reflector.get<Role[]>('roles', context.getHandler());
+    if (!roles) {
+      return true;
+    }
 
-		const request = context.switchToHttp().getRequest();
-		const user = request.user;
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
 
-		if (!user) {
-			throw new UnauthorizedException('Usuario no autenticado');
-		}
+    if (!user) {
+      throw new UnauthorizedException('Usuario no autenticado');
+    }
 
-		if (!user.roles || user.roles.length === 0) {
-			throw new UnauthorizedException('El usuario no tiene roles asignados');
-		}
+    if (!user.role || user.role.length === 0) {
+      throw new UnauthorizedException('El usuario no tiene roles asignados');
+    }
 
-		const hasRole = roles.some((role) => user.roles.includes(role));
+    const hasRole = roles.some((role) => user.role.includes(role));
 
-		if (!hasRole) {
-			throw new UnauthorizedException('No tienes permiso para acceder a este recurso');
-		}
+    if (!hasRole) {
+      throw new UnauthorizedException('No tienes permiso para acceder a este recurso');
+    }
 
-		console.log(`Usuario ${user.email} con roles ${user.roles.join(', ')} accedió a un recurso protegido`);
+    console.log(`Usuario ${user.email} con role ${user.role.join(', ')} accedió a un recurso protegido`);
 
-		return true;
-	}
+    return true;
+  }
 }

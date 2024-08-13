@@ -8,6 +8,7 @@ import {
   ParseUUIDPipe,
   Put,
   Query,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -15,11 +16,21 @@ import { Users } from './users.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { PasswordInterceptor } from 'src/interceptors/password.interceptor';
 import { Role } from 'src/enum/role.enum';
+import { Roles } from 'src/decorators/role.decorator';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @Get('prueba')
+  getUsersprueba(){
+    return 'hola prueba get'
+  }
 
   @HttpCode(200)
   @UseInterceptors(PasswordInterceptor)

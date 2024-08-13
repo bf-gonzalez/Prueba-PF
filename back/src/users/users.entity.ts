@@ -1,6 +1,7 @@
 import { Comics } from 'src/comics/comics.entity';
 import { Comments } from 'src/comment/comment.entity';
 import { Membership } from 'src/membership/membership.entity';
+import { Events } from 'src/events/events.entity';
 import {
   Column,
   Entity,
@@ -95,6 +96,7 @@ export class Users {
   })
   password: string;
 
+  
   @Column({
     type: 'enum',
     enum: Role,
@@ -134,4 +136,7 @@ export class Users {
   @OneToMany(() => Chats, (chat) => chat.user)
   @JoinColumn({name: 'chat_id'})
   chats: Chats[];
+
+  @OneToMany(() => Events, (event) => event.user)
+  events: Events[];
 }
