@@ -2,6 +2,13 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
+import { Bebas_Neue } from 'next/font/google';
+
+const bebas = Bebas_Neue({
+    subsets: ['latin'],
+    weight: ['400'],
+    variable: '--font-bebas',
+});
 
 const updateUserName = async (userId: string, newUserName: string) => {
     try {
@@ -75,7 +82,10 @@ export const NewUserName: React.FC = () => {
                 />
                 <button
                     type="submit"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4"
+                    className={`${bebas.variable} font-sans 
+                    login cursor-pointer
+                    text-4xl text-white hover:text-yellow-400
+                    transition-all custom-transition duration-300`}
                 >
                     Cambiar Nombre de Usuario
                 </button>
