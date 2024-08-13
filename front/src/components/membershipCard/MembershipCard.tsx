@@ -48,7 +48,7 @@ const handleCheckout = async (product: MembershipOption, isLogged: boolean) => {
         }
 
         const session = await res.json();
-        console.log("Session:", session); 
+        console.log("Session:", session);
 
         if (session.url) {
             window.location.href = session.url;
@@ -64,13 +64,19 @@ const MembershipCard = ({ name, price, description, features, type }: Membership
     const priceInDollars = (price / 100).toFixed(2);
     const { isLogged } = useContext(UserContext);
     
+    // Determine the unit based on the type of membership
+    const priceUnit = name.toLowerCase().includes('anual') ? 'año' : 'mes';
+    
+    // For annual memberships, display the total cost rather than the monthly cost
+    const displayPrice = name.toLowerCase().includes('anual') ? priceInDollars : `$${priceInDollars}`;
+
     return (
         <div className="w-80 p-4 rounded-lg shadow bg-custom-transparent">
             <h5 className="mb-4 text-xl font-medium text-custom-input text-yellow-500">{name}</h5>
             <div className="flex items-baseline text-yellow-500">
                 <span className="text-3xl font-semibold">$</span>
-                <span className="text-5xl font-extrabold tracking-tight">{priceInDollars}</span>
-                <span className="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">/{name.includes('anual') ? 'año' : 'mes'}</span>
+                <span className="text-5xl font-extrabold tracking-tight">{displayPrice}</span>
+                <span className="ms-1 text-xl font-normal text-gray-500 dark:text-gray-400">/{priceUnit}</span>
             </div>
             <p className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400 my-4">{description}</p>
             <ul className="space-y-5 my-7">
