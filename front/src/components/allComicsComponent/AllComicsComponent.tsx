@@ -44,7 +44,7 @@ const AllComicsComponent: React.FC = () => {
 
     const fetchComics = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics/active`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics`);
         setComics(response.data);
         console.log("Fetched Comics:", response.data);
         response.data.forEach((comic: any) => {
@@ -106,6 +106,7 @@ const AllComicsComponent: React.FC = () => {
   };
 
   const filteredComics = comics
+    .filter(comic => comic.isActive && !comic.user.isDeleted)
     .filter((comic) =>
       comic.title.toLowerCase().includes(searchQuery.toLowerCase())
     )

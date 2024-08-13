@@ -21,8 +21,8 @@ function TrendingComics() {
     useEffect(() => {
         const fetchComics = async () => {
             try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics/active`); 
-                const allComics = response.data;
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics`); 
+                const allComics = response.data.filter(comic => comic.isActive && !comic.user.isDeleted);
                 const randomComics = getRandomComics(allComics, 5); // Obtener 5 cómics aleatorios
                 setComics(randomComics);
 
