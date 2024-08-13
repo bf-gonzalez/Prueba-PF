@@ -1,46 +1,122 @@
-import { Bebas_Neue } from 'next/font/google';
 import React, { useState } from 'react';
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
 
-const  bebas = Bebas_Neue({
-  subsets:['latin'],
-  weight: ['400'],
-  variable: '--font-bebas',
-});
+const animatedComponents = makeAnimated();
+
+const categoryOptions = [
+  { value: 'accion', label: 'Acción' },
+  { value: 'romance', label: 'Romance' },
+  { value: 'comedia', label: 'Comedia' },
+];
+
+const typeComicOptions = [
+  { value: 'comic_americano', label: 'Comic Americano' },
+  { value: 'manga', label: 'Manga' },
+  { value: 'comic_latinoamericano', label: 'Comic Latinoamericano' },
+];
+
+const languageOptions = [
+  { value: 'espanol', label: 'Español' },
+  { value: 'ingles', label: 'Inglés' },
+  { value: 'japones', label: 'Japónes' },
+  { value: 'frances', label: 'Fránces' },
+  { value: 'italiano', label: 'Italiano' },
+];
+
+const customStyles = {
+  control: (provided) => ({
+    ...provided,
+    backgroundColor: '#01061A',
+    color: 'white',
+  }),
+  menu: (provided) => ({
+    ...provided,
+    backgroundColor: '#01061A',
+    color: 'white',
+  }),
+  singleValue: (provided) => ({
+    ...provided,
+    color: 'white',
+  }),
+  multiValue: (provided) => ({
+    ...provided,
+    backgroundColor: '#01061A',
+    color: 'white',
+    border: '1px solid white',
+  }),
+  multiValueLabel: (provided) => ({
+    ...provided,
+    color: 'white',
+  }),
+  placeholder: (provided) => ({
+    ...provided,
+    color: 'white',
+  }),
+  input: (provided) => ({
+    ...provided,
+    color: 'white',
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isFocused ? 'white' : '#01061A',
+    color: state.isFocused ? 'black' : 'white',
+  }),
+};
 
 interface CategoryFilterProps {
-  onCategoryChange: (categories: string[]) => void;
+  onCategoryChange: (categories: string[], typeComic: string | null, language: string | null) => void;
   initialCategories: string[];
 }
 
 const CategoryFilter: React.FC<CategoryFilterProps> = ({ onCategoryChange, initialCategories }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategories);
+  const [selectedTypeComic, setSelectedTypeComic] = useState(null);
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
 
-  const handleCategoryToggle = (category: string) => {
-    setSelectedCategories((prevCategories) =>
-      prevCategories.includes(category)
-        ? prevCategories.filter((cat) => cat !== category)
-        : [...prevCategories, category]
-    );
+  const handleCategoryChange = (selectedOptions) => {
+    const categories = selectedOptions.map(option => option.value);
+    setSelectedCategories(categories);
+    onCategoryChange(categories, selectedTypeComic, selectedLanguage);
   };
 
-  const handleApplyFilters = () => {
-    onCategoryChange(selectedCategories);
+  const handleTypeComicChange = (selectedOption) => {
+    const typeComic = selectedOption ? selectedOption.value : null;
+    setSelectedTypeComic(typeComic);
+    onCategoryChange(selectedCategories, typeComic, selectedLanguage);
+  };
+
+  const handleLanguageChange = (selectedOption) => {
+    const language = selectedOption ? selectedOption.value : null;
+    setSelectedLanguage(language);
+    onCategoryChange(selectedCategories, selectedTypeComic, language);
   };
 
   return (
-    <div className="category-filter pb-6">
-      <div className="flex flex-wrap justify-center space-x-2">
-        {['Comic Americano', 'Comic Europeo', 'Manga Japonés', 'Comic Latino', 'Acción', 'Drama', 'Romance'].map((category) => (
-          <button
-            key={category}
-            onClick={() => handleCategoryToggle(category)}
-            className={`px-4 py-2 rounded ${selectedCategories.includes(category) ? 'bg-rose-900 text-white' : 'bg-gray-200 text-gray-800'} transition-colors duration-300`}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
-      <button onClick={handleApplyFilters} className="mt-4 px-4 py-2 bg-[#F5C702] text-gray-800 rounded hover:bg-blue-700 hover:text-white transition-colors duration-300">Aplicar Filtros</button>
+    <div>
+      <Select
+        closeMenuOnSelect={false}
+        components={animatedComponents}
+        isMulti
+        options={categoryOptions}
+        styles={customStyles}
+        placeholder="Selecciona categorías"
+        onChange={handleCategoryChange}
+      />
+      <Select
+        options={typeComicOptions}
+        styles={customStyles}
+        placeholder="Selecciona tipo de comic"
+        onChange={handleTypeComicChange}
+        isClearable
+      />
+      <Select
+        options={languageOptions}
+        styles={customStyles}
+        placeholder="Selecciona lenguaje"
+        onChange={handleLanguageChange}
+        isClearable
+      />
     </div>
   );
 };

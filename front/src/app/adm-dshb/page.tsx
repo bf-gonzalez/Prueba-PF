@@ -262,6 +262,7 @@ export default function AdminDashboard() {
                     onClose={handleCloseModal}
                     onSelectImage={handleImageSelect}
                     onUpload={handleUpload}
+                    setUser={setUser} // Asegúrate de pasar setUser aquí
                 />
             )}
 

@@ -87,6 +87,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         localStorage.removeItem("decodedUser");
+        localStorage.removeItem("searchQuery"); // Eliminar búsqueda
+        localStorage.removeItem("dateOrder"); // Eliminar filtro de fechas
+        localStorage.removeItem("categoryFilter"); // Eliminar filtro de categorías
         setUser(null);
         setIsLogged(false);
     };

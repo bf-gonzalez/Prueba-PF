@@ -68,12 +68,6 @@ export default function UploadPage() {
             <div className="text-right text-sm text-gray-500">{description.length}/256</div>
           </div>
         </div>
-        {comicData && (
-          <div className="mt-4 p-4 border rounded bg-gray-100">
-            <h3 className="text-lg font-bold">Objeto enviado al backend:</h3> 
-            <pre className="text-sm">{JSON.stringify(comicData, null, 2)}</pre>
-          </div>
-        )}
       </div>
       <div className="w-full mb-4 flex flex-col items-center">
         <CategorySelector onChange={handleCategoryChange} />
