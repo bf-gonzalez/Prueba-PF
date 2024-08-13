@@ -80,17 +80,311 @@ export class MembershipsRepository {
         case MembershipType.MonthlyMember:
           subject = '¡Gracias por adquirir la membresía mensual!';
           text = `¡Hola ${user.username}! Gracias por unirte a nuestra membresía mensual.`;
-          html = `<p>¡Hola ${user.username}! Gracias por unirte a nuestra <strong>membresía mensual</strong>.</p>`;
+          html = `
+          <html>
+            <head>
+              <style>
+                body {
+                  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+                  background-color: #f2f2f2;
+                  margin: 0;
+                  padding: 0;
+                }
+                .container {
+                  width: 100%;
+                  max-width: 600px;
+                  margin: 0 auto;
+                  background-color: #ffffff;
+                  padding: 20px;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }
+                .header {
+                  background-color: #ffcc00;
+                  color: #333;
+                  text-align: center;
+                  padding: 20px 0;
+                  border-top-left-radius: 8px;
+                  border-top-right-radius: 8px;
+                }
+                .header h1 {
+                  margin: 0;
+                  font-size: 24px;
+                  text-transform: uppercase;
+                  letter-spacing: 1.5px;
+                }
+                .content {
+                  padding: 20px;
+                  color: #333;
+                }
+                .content p {
+                  margin: 10px 0;
+                  line-height: 1.6;
+                }
+                .footer {
+                  text-align: center;
+                  padding: 10px 0;
+                  background-color: #ffcc00;
+                  color: #333;
+                  border-bottom-left-radius: 8px;
+                  border-bottom-right-radius: 8px;
+                  font-size: 12px;
+                }
+                .footer p {
+                  margin: 0;
+                }
+                .contenedorimg {
+                  text-align: center;
+                  margin: 20px 0;
+                }
+                .contenedorimg img.batman {
+                  max-width: 100%;
+                  height: auto;
+                }
+                .botoncreador {
+                  background-color: #ffcc00;
+                  color: #333;
+                  border: none;
+                  border-radius: 8px;
+                  padding: 10px 20px;
+                  cursor: pointer;
+                  font-size: 16px;
+                  margin-top: 10px;
+                }
+                .botoncreador:hover {
+                  background-color: #e6b800;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h1>¡Gracias por adquirir la Membresía Mensual!</h1>
+                </div>
+                <div class="content">
+                  <p>Hola ${user.username},</p>
+                  <p>¡Gracias por unirte a nuestra membresía mensual en ComiCraft! Durante este mes, podrás disfrutar de todos los cómics disponibles en nuestra plataforma.</p>
+                  <p>Explora, descubre y sumérgete en las historias que tenemos para ti. ¡Estamos seguros de que encontrarás tus favoritos!</p>
+        
+                  <div class="contenedorimg">
+                    <p>Comienza a disfrutar de los cómics ahora mismo:</p>
+                    <img class="batman" src="https://res.cloudinary.com/dyeji7bvg/image/upload/v1723517901/Group_13_1_jaudze.png">
+                    <p>Haz clic en el botón a continuación para empezar a leer.</p>
+                    <button class="botoncreador" onclick="window.open('https://www.tu-url.com/comics', '_blank')">Comics</button>
+                  </div>
+                </div>
+                <div class="footer">
+                  <p>&copy; 2024 ComiCraft. Todos los derechos reservados.</p>
+                </div>
+              </div>
+            </body>
+          </html>`;
           break;
         case MembershipType.AnnualMember:
           subject = '¡Gracias por adquirir la membresía anual!';
           text = `¡Hola ${user.username}! Gracias por confiar en nosotros y adquirir la membresía anual.`;
-          html = `<p>¡Hola ${user.username}! Gracias por confiar en nosotros y adquirir la <strong>membresía anual</strong>.</p>`;
+          html = `
+          <html>
+            <head>
+              <style>
+                body {
+                  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+                  background-color: #f2f2f2;
+                  margin: 0;
+                  padding: 0;
+                }
+                .container {
+                  width: 100%;
+                  max-width: 600px;
+                  margin: 0 auto;
+                  background-color: #ffffff;
+                  padding: 20px;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }
+                .header {
+                  background-color: #ffcc00;
+                  color: #333;
+                  text-align: center;
+                  padding: 20px 0;
+                  border-top-left-radius: 8px;
+                  border-top-right-radius: 8px;
+                }
+                .header h1 {
+                  margin: 0;
+                  font-size: 24px;
+                  text-transform: uppercase;
+                  letter-spacing: 1.5px;
+                }
+                .content {
+                  padding: 20px;
+                  color: #333;
+                }
+                .content p {
+                  margin: 10px 0;
+                  line-height: 1.6;
+                }
+                .footer {
+                  text-align: center;
+                  padding: 10px 0;
+                  background-color: #ffcc00;
+                  color: #333;
+                  border-bottom-left-radius: 8px;
+                  border-bottom-right-radius: 8px;
+                  font-size: 12px;
+                }
+                .footer p {
+                  margin: 0;
+                }
+                .contenedorimg {
+                  text-align: center;
+                  margin: 20px 0;
+                }
+                .contenedorimg img.batman {
+                  max-width: 100%;
+                  height: auto;
+                }
+                .botoncreador {
+                  background-color: #ffcc00;
+                  color: #333;
+                  border: none;
+                  border-radius: 8px;
+                  padding: 10px 20px;
+                  cursor: pointer;
+                  font-size: 16px;
+                  margin-top: 10px;
+                }
+                .botoncreador:hover {
+                  background-color: #e6b800;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h1>¡Gracias por adquirir la Membresía Anual!</h1>
+                </div>
+                <div class="content">
+                  <p>Hola ${user.username},</p>
+                  <p>¡Gracias por unirte a la membresía anual de ComiCraft! Ahora tendrás acceso ilimitado a todos los cómics en nuestra plataforma durante todo un año.</p>
+                  <p>Estamos emocionados de que disfrutes de nuestra extensa colección de cómics y mangas. ¡Explora, descubre y sumérgete en las mejores historias que ComiCraft tiene para ofrecer!</p>
+        
+                  <div class="contenedorimg">
+                    <p>Comienza a disfrutar de los cómics ahora mismo:</p>
+                    <img class="batman" src="https://res.cloudinary.com/dyeji7bvg/image/upload/v1723517152/Group_11_ujqzlc.png">
+                    <p>Haz clic en el botón a continuación para empezar a leer.</p>
+                    <button class="botoncreador" onclick="window.open('https://www.tu-url.com/comics', '_blank')">Comics</button>
+                  </div>
+                </div>
+                <div class="footer">
+                  <p>&copy; 2024 ComiCraft. Todos los derechos reservados.</p>
+                </div>
+              </div>
+            </body>
+          </html>`;
           break;
         case MembershipType.Creator:
           subject = '¡Gracias por adquirir la membresía Creator!';
-          text = `¡Hola ${user.username}! Bienvenido a la membresía Creator. Estamos emocionados de tenerte con nosotros.`;
-          html = `<p>¡Hola ${user.username}! Bienvenido a la <strong>membresía Creator</strong>. Estamos emocionados de tenerte con nosotros.</p>`;
+          text = `¡Hola ${user.username}! Bienvenido a la membresía Creador. Estamos emocionados de tenerte con nosotros.`;
+          html = `
+          <html>
+            <head>
+              <style>
+                body {
+                  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+                  background-color: #f2f2f2;
+                  margin: 0;
+                  padding: 0;
+                }
+                .container {
+                  width: 100%;
+                  max-width: 600px;
+                  margin: 0 auto;
+                  background-color: #ffffff;
+                  padding: 20px;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }
+                .header {
+                  background-color: #ffcc00;
+                  color: #333;
+                  text-align: center;
+                  padding: 20px 0;
+                  border-top-left-radius: 8px;
+                  border-top-right-radius: 8px;
+                }
+                .header h1 {
+                  margin: 0;
+                  font-size: 24px;
+                  text-transform: uppercase;
+                  letter-spacing: 1.5px;
+                }
+                .content {
+                  padding: 20px;
+                  color: #333;
+                }
+                .content p {
+                  margin: 10px 0;
+                  line-height: 1.6;
+                }
+                .footer {
+                  text-align: center;
+                  padding: 10px 0;
+                  background-color: #ffcc00;
+                  color: #333;
+                  border-bottom-left-radius: 8px;
+                  border-bottom-right-radius: 8px;
+                  font-size: 12px;
+                }
+                .footer p {
+                  margin: 0;
+                }
+                .contenedorimg {
+                  text-align: center;
+                  margin: 20px 0;
+                }
+                .contenedorimg img.batman {
+                  max-width: 100%;
+                  height: auto;
+                }
+                .botoncreador {
+                  background-color: #ffcc00;
+                  color: #333;
+                  border: none;
+                  border-radius: 8px;
+                  padding: 10px 20px;
+                  cursor: pointer;
+                  font-size: 16px;
+                  margin-top: 10px;
+                }
+                .botoncreador:hover {
+                  background-color: #e6b800;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h1>¡Bienvenido a la Membresía de Creador!</h1>
+                </div>
+                <div class="content">
+                  <p>Hola ${user.username},</p>
+                  <p>¡Gracias por adquirir la membresía de Creador! Estamos emocionados de tenerte con nosotros y esperamos con ansias tus nuevas historias.</p>
+                  <p>En ComiCraft, valoramos tu creatividad y queremos que compartas tus mejores cómics con nuestra comunidad. ¡Estamos seguros de que serás una estrella en nuestro mundo de cómics!</p>
+        
+                  <div class="contenedorimg">
+                    <p>Comienza tu aventura como creador:</p>
+                    <img class="batman" src="https://res.cloudinary.com/dyeji7bvg/image/upload/v1723509050/Group_7_1_h8ejct.png">
+                    <p>Haz clic en el botón a continuación para empezar a crear y compartir tus mejores historias.</p>
+                    <button class="botoncreador" onclick="window.open('https://www.tu-url.com', '_blank')">¡Inicio!</button>
+                  </div>
+                </div>
+                <div class="footer">
+                  <p>&copy; 2024 ComiCraft. Todos los derechos reservados.</p>
+                </div>
+              </div>
+            </body>
+          </html>`;
           break;
         default:
           throw new BadRequestException('Tipo de membresía no válido');
