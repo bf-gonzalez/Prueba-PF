@@ -25,11 +25,11 @@ const bebas = Bebas_Neue({
 
 export default function dashboard() {
 
-    const {isLogged, user} = useContext(UserContext);
+    const { isLogged, user, setUser } = useContext(UserContext);
     const router = useRouter();
-    const [userName, setUserName] = useState<string | null>(null);
+    const [userName, setUserName] = useState<string | null>(user?.name || null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [profilePicture, setProfilePicture] = useState<string | null>(null);
+    const [profilePicture, setProfilePicture] = useState<string | null>(user?.profilePicture || "/images/userIcon2.png");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [membershipType, setMembershipType] = useState<string | null>(null);
     const [userComics, setUserComics] = useState([]);
@@ -38,36 +38,36 @@ export default function dashboard() {
     useEffect(() => {
         const decodedUser = localStorage.getItem("decodedUser");
         if (decodedUser) {
-          const user = JSON.parse(decodedUser);
-          setUserName(user.name);
-          setMembershipType(user.MembershipType);
+            const user = JSON.parse(decodedUser);
+            setUserName(user.name);
+            setMembershipType(user.MembershipType);
 
-          // Fetch user data from backend
-          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}`)
-            .then(response => {
-              const userData = response.data;
-              setProfilePicture(userData.profilePicture === "none" ? "/images/userIcon2.png" : userData.profilePicture);
-            })
-            .catch(error => {
-              console.error("Error fetching user data:", error);
-            });
+            // Fetch user data from backend
+            axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}`)
+                .then(response => {
+                    const userData = response.data;
+                    setProfilePicture(userData.profilePicture === "none" ? "/images/userIcon2.png" : userData.profilePicture);
+                })
+                .catch(error => {
+                    console.error("Error fetching user data:", error);
+                });
 
-          // Fetch user comics
-          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics`)
-            .then(response => {
-              const comics = response.data;
-              const userComics = comics.filter(comic => comic.user.id === user.id);
-              setUserComics(userComics);
+            // Fetch user comics
+            axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics`)
+                .then(response => {
+                    const comics = response.data;
+                    const userComics = comics.filter(comic => comic.user.id === user.id);
+                    setUserComics(userComics);
 
-              userComics.forEach(comic => {
-                fetchImages(comic.folderName, comic.id);
-              });
-            })
-            .catch(error => {
-              console.error("Error fetching comics:", error);
-            });
+                    userComics.forEach(comic => {
+                        fetchImages(comic.folderName, comic.id);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching comics:", error);
+                });
         }
-      }, []);
+    }, [user]);
 
     const fetchImages = async (folderName, comicId) => {
         try {
@@ -78,8 +78,19 @@ export default function dashboard() {
         }
     };
 
-    const handleOpenModal = () => {
+    const handleOpenModal = async () => {
         setIsModalOpen(true);
+        const decodedUser = localStorage.getItem("decodedUser");
+        if (decodedUser) {
+            const user = JSON.parse(decodedUser);
+            try {
+                const response = await axios.get(`http://localhost:3000/users/${user.id}`);
+                const userData = response.data;
+                setProfilePicture(userData.profilePicture);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        }
     };
 
     const handleCloseModal = () => {
@@ -98,20 +109,23 @@ export default function dashboard() {
         formData.append('upload_preset', 'ml_default');
 
         try {
-          const response = await axios.post('https://api.cloudinary.com/v1_1/dx1kqmh8v/image/upload', formData);
-          const imageUrl = response.data.secure_url;
-          setProfilePicture(imageUrl);
+            const response = await axios.post('https://api.cloudinary.com/v1_1/dx1kqmh8v/image/upload', formData);
+            const imageUrl = response.data.secure_url;
+            setProfilePicture(imageUrl);
 
-          // Guardar la URL en el backend
-          const decodedToken = JSON.parse(localStorage.getItem("decodedToken"));
-          const userId = decodedToken.id;
-          await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/profile-picture`, {
-            profilePicture: imageUrl
-          });
+            // Guardar la URL en el backend
+            const decodedToken = JSON.parse(localStorage.getItem("decodedToken"));
+            const userId = decodedToken.id;
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/profile-picture`, {
+                profilePicture: imageUrl
+            });
 
-          handleCloseModal();
+            // Actualizar la imagen de perfil en tiempo real
+            setUser(prevUser => ({ ...prevUser, profilePicture: imageUrl }));
+
+            handleCloseModal();
         } catch (error) {
-          console.error('Error uploading image:', error);
+            console.error('Error uploading image:', error);
         }
     };
 
@@ -132,6 +146,10 @@ export default function dashboard() {
   
       fetchUsers(); 
     }, []);
+
+    const handleUploadSuccess = (imageUrl) => {
+        console.log("Upload successful, image URL:", imageUrl);
+    };
 
     return (
         <div className={styles.fondo}>
@@ -327,7 +345,7 @@ export default function dashboard() {
 
         )}
 
-        <ProfilePictureModal isOpen={isModalOpen} onClose={handleCloseModal} onImageSelect={handleImageSelect} handleUpload={handleUpload} />
+        <ProfilePictureModal isOpen={isModalOpen} onClose={handleCloseModal} onImageSelect={handleImageSelect} handleUpload={handleUpload} setUser={setUser} onUploadSuccess={handleUploadSuccess} />
 
         </div>
     )
