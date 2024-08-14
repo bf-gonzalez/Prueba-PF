@@ -7,18 +7,18 @@ function NotFoundComp () {
     
     return( 
         <main >
-    <div className="">
+    <div className="bg-black">
     <img src="/images/errorTr.png" alt="Esta ruta no existe!"
-    className="w-screen pt-16"  />         
+    className="w-screen pt-[8vh] "  />         
     </div>
 
-    <div className="flex">
+    <div className="flex self-end">
 
-    {/* <button type="button" onClick={() => router.push ('/home')} >
+    <button type="button" onClick={() => router.push ('/home')} >
         <img src="/images/volverBtn.png" alt="Volver"
         className="volver transition-transform duration-300 hover:scale-105
-        cursor-pointer "  />
-    </button> */}
+        cursor-pointer flex  "  />
+    </button>
 
     </div>
     </main>

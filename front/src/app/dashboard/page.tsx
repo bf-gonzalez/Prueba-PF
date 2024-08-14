@@ -38,9 +38,11 @@ export default function dashboard() {
     useEffect(() => {
         const decodedUser = localStorage.getItem("decodedUser");
         if (decodedUser) {
-            const user = JSON.parse(decodedUser);
-            setUserName(user.name);
-            setMembershipType(user.MembershipType);
+
+          const user = JSON.parse(decodedUser);
+          setUserName(user.username);
+          setMembershipType(user.MembershipType);
+
 
             // Fetch user data from backend
             axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}`)
@@ -147,9 +149,23 @@ export default function dashboard() {
       fetchUsers(); 
     }, []);
 
+
+    const [googleToken, setGoogleToken] = useState<string | null>(null);
+
+    useEffect(() => {
+        const storedToken = localStorage.getItem("googleToken");
+
+        if (storedToken) {
+            setGoogleToken(storedToken); 
+        } else {
+            console.error("Token de Google no encontrado en LocalStorage");
+        }
+    }, []);
+
     const handleUploadSuccess = (imageUrl) => {
         console.log("Upload successful, image URL:", imageUrl);
     };
+
 
     return (
         <div className={styles.fondo}>
@@ -174,14 +190,9 @@ export default function dashboard() {
             text-5xl text-white uppercase self-center
             
             `}> {userName} </h2>
-            <a href="http://localhost:3001/newpassword">
-  <h2 className="text-yellow-400 cursor-pointer">cambiar contraseña</h2>
-</a>
-<a href="http://localhost:3001/newusername">
-  <h2 className="text-yellow-400 cursor-pointer">cambiar nombre de usuario</h2>
-</a>
 
 
+{/* 
 {['monthly_member', 'annual_member', 'creator'].includes(membershipType) && (
   <section className="flex flex-row space-x-12 self-center pt-6">
     <p className={`${bebas.variable} font-sans 
@@ -192,7 +203,7 @@ export default function dashboard() {
     `}>(NÚMERO) COMICS</p>    
   </section>
 )}
-
+  */}
 </div>
 
 <div className="flex flex-col items-center">
@@ -230,6 +241,27 @@ export default function dashboard() {
   />
   <AllComicsComponent />
 </section> */}
+
+<section className="pt-[6vh] text-center">
+
+{isLogged && !googleToken && (
+<a href="http://localhost:3001/newusername">
+  <h2 className={`${josefin.variable} font-sans 
+  text-yellow-400 cursor-pointer text-5xl pb-[2vh] `}>
+  CAMBIAR NOMBRE DE USUARIO</h2>
+</a>
+)}
+
+{isLogged && !googleToken && (
+
+<a href="http://localhost:3001/newpassword">
+  <h2 className={`${josefin.variable} font-sans 
+  text-yellow-400 cursor-pointer text-5xl`}>
+  CAMBIAR CONTRASEÑA</h2>
+</a>
+)}
+
+</section>
 
 {membershipType === 'creator' && (
   <section className="">
@@ -321,7 +353,7 @@ export default function dashboard() {
   </section>
 )}
 
-{/* PARA TODOS LOS USERS: */}
+{/* APARTADO DESCARTADO DE BIBLIOTECA PARA TODOS LOS USERS: 
 <section className="">
 <img src="/images/biblioteca.png" className="max-w-sm flex  ml-auto mr-auto pt-2 "/>
 
@@ -339,7 +371,7 @@ export default function dashboard() {
 </button>
 </div>   
 
-</section>                           
+</section>                            */}
 
 </main>
 

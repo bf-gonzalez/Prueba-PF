@@ -18,7 +18,7 @@ const ChatbotIcon = () => {
       {!isOpen && (
         <div 
           onClick={toggleChatbot} 
-          className="fixed bottom-4 right-4 cursor-pointer z-50"
+          className="fixed bottom-4 right-4 cursor-pointer z-50 text-black bg-yellow-400 border-4 border-rose-800 rounded-xl"
         >
           <MdSupportAgent size={50} />
         </div>
