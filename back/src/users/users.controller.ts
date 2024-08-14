@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Users } from './users.entity';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags, ApiBody } from '@nestjs/swagger';
 import { PasswordInterceptor } from 'src/interceptors/password.interceptor';
 import { Role } from 'src/enum/role.enum';
 import { Roles } from 'src/decorators/role.decorator';
@@ -28,13 +28,16 @@ export class UsersController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Get('prueba')
-  getUsersprueba(){
-    return 'hola prueba get'
+  getUsersprueba() {
+    return 'hola prueba get';
   }
-
+ 
   @HttpCode(200)
   @UseInterceptors(PasswordInterceptor)
   @Get()
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número de página' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Número de elementos por página' })
+  @ApiQuery({ name: 'name', required: false, type: String, description: 'Nombre del usuario' })
   getUsers(
     @Query('name') name?: string,
     @Query('page') page?: string,
@@ -45,13 +48,15 @@ export class UsersController {
     }
     !page ? (page = '1') : page;
     !limit ? (limit = '5') : limit;
-    if (page && limit)
-      return this.usersService.getUsers(Number(page), Number(limit));
+    return this.usersService.getUsers(Number(page), Number(limit));
   }
 
   @HttpCode(200)
   @UseInterceptors(PasswordInterceptor)
   @Get('deleted')
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número de página'})
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Número de elementos por página'})
+  @ApiQuery({ name: 'name', required: false, type: String, description: 'Nombre del usuario'})
   getDeletedUsers(
     @Query('name') name?: string,
     @Query('page') page?: string,
@@ -97,6 +102,16 @@ export class UsersController {
   @HttpCode(201)
   @UseInterceptors(PasswordInterceptor)
   @Put(':id')
+  @ApiBody({
+    schema: {
+      example: {
+        dob: "1999-07-12",
+        phone: "5987654321",
+        username: "Carleroxx",
+        name: "Carlos"
+      }
+    }
+  })
   updateUser(@Param('id', ParseUUIDPipe) id: string, @Body() user: Partial<Users>) {
     return this.usersService.updateUser(id, user);
   }
@@ -104,6 +119,13 @@ export class UsersController {
   @HttpCode(200)
   @UseInterceptors(PasswordInterceptor)
   @Put(':id/role')
+  @ApiBody({
+    schema: {
+      example: {
+        role: "admin"
+      }
+    }
+  })
   updateUserRole(
     @Param('id', ParseUUIDPipe) id: string,
     @Body('role') role: Role,
@@ -114,6 +136,13 @@ export class UsersController {
   @HttpCode(200)
   @UseInterceptors(PasswordInterceptor)
   @Put(':id/profile-picture')
+  @ApiBody({
+    schema: {
+      example: {
+        url: "https://cdn.aarp.net/content/dam/aarp/politics/advocacy/2023/03/1140-bill-gates-headshot-esp.jpg"
+      }
+    }
+  })
   async updateProfilePicture(
     @Param('id') id: string,
     @Body('url') url: string,

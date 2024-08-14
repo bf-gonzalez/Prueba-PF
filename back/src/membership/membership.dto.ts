@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty, PartialType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
@@ -11,12 +11,12 @@ import {
 } from 'class-validator';
 import { MembershipType } from 'src/enum/membership-type.enum';
 
-/**
- * Email:
- * Debe ser de tipo string y un formato de correo válido
- * @example 'comicraft2024gmail.com'
- */
+
 export class CreateMembershipDto {
+  @ApiProperty({
+    example: 'comicraft2024@gmail.com',
+    description: 'Debe ser de tipo string y un formato de correo válido',
+  })
   @IsNotEmpty()
   @IsString()
   email: string;
@@ -66,6 +66,7 @@ export class CreateMembershipDto {
 
   @IsOptional()
   @IsBoolean()
+  @ApiHideProperty()
   isDeleted: boolean;
 }
 
