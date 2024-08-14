@@ -44,7 +44,6 @@ export class MembershipController {
 
   @Delete(':id')
   removeMembership(@Param('id', ParseUUIDPipe) id: string) {
-    console.log('controller borrar membresia', id);
     return this.membershipService.removeMembership(id);
   }
 
@@ -63,11 +62,6 @@ export class MembershipController {
 
   @Post('/prueba')
   Membership(@Body() data) {
-    try {
-      console.log('membershipController=', data);
-      return data;
-    } catch (error) {
-      console.error;
-    }
+    return data;
   }
 }
