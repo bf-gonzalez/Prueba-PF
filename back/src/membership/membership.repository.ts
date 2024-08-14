@@ -63,11 +63,9 @@ export class MembershipsRepository {
         expiration_date,
         user,
       };
-      console.log('newUser=', newUserMembership);
 
       const userMembership =
         await this.membershipsRepository.save(newUserMembership);
-      console.log('membershipRepository=', userMembership);
 
       user.memberships = userMembership;
       await this.usersRepositorySave.save(user);
@@ -394,7 +392,6 @@ export class MembershipsRepository {
 
       return `Membresía adquirida, id ${userMembership.id}`;
     } catch (error) {
-      console.log(error);
       if (error instanceof NotFoundException) throw error;
       throw new BadRequestException();
     }
@@ -407,9 +404,6 @@ export class MembershipsRepository {
         .leftJoinAndSelect('membership.user', 'user')
         .select(['membership', 'user.id'])
         .getMany();
-      /* const activeMemberships = memberships.filter(
-        (membership) => membership.isDeleted === false,
-      ); */
 
       return memberships;
     } catch (error) {
@@ -466,9 +460,6 @@ export class MembershipsRepository {
         .where('user.id = :userId', { userId })
         .getOne();
       if (!membership) {
-        console.log(
-          `No se encontró membresía para el usuario con id: ${userId}`,
-        );
         return null;
       }
       return membership;
@@ -531,7 +522,6 @@ export class MembershipsRepository {
   }
 
   async updateMembership(id: string, updateMembershipDto: UpdateMembershipDto) {
-    console.log('updateMembershipDTO=', updateMembershipDto);
     const { type, created_at } = updateMembershipDto;
     try {
       const foundMembership = await this.membershipsRepository.findOneBy({

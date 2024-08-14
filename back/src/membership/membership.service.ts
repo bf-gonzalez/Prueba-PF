@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMembershipDto, UpdateMembershipDto } from './membership.dto';
 import { MembershipsRepository } from './membership.repository';
-import { Membership } from './membership.entity';
 
 @Injectable()
 export class MembershipService {
