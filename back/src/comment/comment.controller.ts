@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { CommentService } from './comment.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('comment')
 @Controller('comment')
@@ -18,15 +18,23 @@ export class CommentController {
     }
 
     @Post(':comicId')
+    @ApiBody({
+        schema: {
+          example: {
+            userId: "",
+            content: "El comic esta buenisimo pero le falto mejor sonido"
+          }
+        }
+      })
     createComment(
         @Body('userId') userId: string,
-        @Param('comicId') comicId: string,
+        @Param('comicId', ParseUUIDPipe) comicId: string,
         @Body('content') content: string,
     ){
         return this.commentService.createComment(userId, comicId, content);
     }
 
-    @Post(':id')
+    @Delete(':id')
     deleteComment(@Param('id', ParseUUIDPipe)id: string){
         return this.commentService.deleteComment(id)
     }
