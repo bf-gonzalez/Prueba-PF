@@ -44,65 +44,31 @@ export class MembershipsRepository {
     return expiration_date;
   }
 
-  async addMembership(createMembershipDto: CreateMembershipDto) {
+  async addMembership(CreateMembershipDto: CreateMembershipDto) {
     const { email, type, created_at, payment_date, price } =
-      createMembershipDto;
+      CreateMembershipDto;
     try {
-      const founduser = await this.usersRepository.getUserByEmail(email);
-      if (!founduser) {
-        throw new NotFoundException('El usuario no está registrado');
+      const foundUser = await this.usersRepository.getUserByEmail(email);
+      console.log('usuario:', foundUser);
+      if (!foundUser) {
+        throw new NotFoundException(`El usuario no está registrado`);
       }
-      const { address, password, name, dob, phone, ...user } = founduser;
       const expiration_date = this.membershipsTypes(type, created_at);
 
-      const newUserMembership = {
-        type,
-        created_at,
-        payment_date,
-        price,
-        expiration_date,
-        user,
-      };
-      console.log('newUser=', newUserMembership);
+      const newMembership = new Membership();
+      newMembership.created_at = created_at;
+      newMembership.payment_date = payment_date;
+      newMembership.expiration_date = expiration_date;
+      newMembership.type = type;
+      newMembership.price = price;
+      newMembership.user = foundUser;
 
-      const userMembership =
-        await this.membershipsRepository.save(newUserMembership);
-      console.log('membershipRepository=', userMembership);
-
-      user.memberships = userMembership;
-      await this.usersRepositorySave.save(user);
-
-      let subject: string;
-      let text: string;
-      let html: string;
-
-      switch (type) {
-        case MembershipType.MonthlyMember:
-          subject = '¡Gracias por adquirir la membresía mensual!';
-          text = `¡Hola ${user.username}! Gracias por unirte a nuestra membresía mensual.`;
-          html = `<p>¡Hola ${user.username}! Gracias por unirte a nuestra <strong>membresía mensual</strong>.</p>`;
-          break;
-        case MembershipType.AnnualMember:
-          subject = '¡Gracias por adquirir la membresía anual!';
-          text = `¡Hola ${user.username}! Gracias por confiar en nosotros y adquirir la membresía anual.`;
-          html = `<p>¡Hola ${user.username}! Gracias por confiar en nosotros y adquirir la <strong>membresía anual</strong>.</p>`;
-          break;
-        case MembershipType.Creator:
-          subject = '¡Gracias por adquirir la membresía Creator!';
-          text = `¡Hola ${user.username}! Bienvenido a la membresía Creator. Estamos emocionados de tenerte con nosotros.`;
-          html = `<p>¡Hola ${user.username}! Bienvenido a la <strong>membresía Creator</strong>. Estamos emocionados de tenerte con nosotros.</p>`;
-          break;
-        default:
-          throw new BadRequestException('Tipo de membresía no válido');
-      }
-
-      await this.mailerService.sendMail(user.email, subject, text, html);
-
-      return `Membresía adquirida, id ${userMembership.id}`;
+      await this.membershipsRepository.save(newMembership);
+      return `membresía adquirida, id: ${newMembership.id}`;
     } catch (error) {
-      console.log(error);
       if (error instanceof NotFoundException) throw error;
-      throw new BadRequestException();
+      console.error(error);
+      throw new BadRequestException(`No se pudo registrar la membresía`);
     }
   }
 
@@ -185,18 +151,22 @@ export class MembershipsRepository {
   }
 
   async removeMembership(id: string) {
-    const membership = await this.membershipsRepository.findOneBy({ id });
+    const membership = await this.membershipsRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
     if (!membership) {
       throw new NotFoundException(`Membresía con el id ${id} no encontrada`);
     }
     try {
-      const user = await this.usersRepositorySave.findOne({
-        where: { memberships: { id } },
-      });
-      if (user) {
-        user.memberships = null;
-        await this.usersRepositorySave.save(user);
+      if (membership.user && membership.user.memberships) {
+        membership.user.memberships = membership.user.memberships.filter(
+          (membership) => membership.id !== id,
+        );
+
+        await this.usersRepositorySave.save(membership.user);
       }
+
       await this.membershipsRepository
         .createQueryBuilder()
         .delete()
@@ -205,6 +175,7 @@ export class MembershipsRepository {
         .execute();
       return 'Membersía eliminada con éxito';
     } catch (error) {
+      console.error(error);
       if (error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException('No se pudo elimar la membresía');
     }

@@ -96,7 +96,6 @@ export class Users {
   })
   password: string;
 
-  
   @Column({
     type: 'enum',
     enum: Role,
@@ -122,9 +121,8 @@ export class Users {
   })
   profilePicture: string;
 
-  @OneToOne(() => Membership, (membership) => membership.user)
-  @JoinColumn({ name: 'membership_id' })
-  memberships: Membership;
+  @OneToMany(() => Membership, (membership) => membership.user)
+  memberships: Membership[];
 
   @OneToMany(() => Comics, (comic) => comic.user)
   comics: Comics[];
@@ -134,7 +132,7 @@ export class Users {
   comments: Comments[];
 
   @OneToMany(() => Chats, (chat) => chat.user)
-  @JoinColumn({name: 'chat_id'})
+  @JoinColumn({ name: 'chat_id' })
   chats: Chats[];
 
   @OneToMany(() => Events, (event) => event.user)

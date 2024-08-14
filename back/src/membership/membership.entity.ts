@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -68,10 +69,7 @@ export class Membership {
   })
   isDeleted: boolean;
 
-  @OneToOne(() => Users, (user) => user.memberships, {
-    eager: true,
-    nullable: false,
-  })
-  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(() => Users, (user) => user.memberships)
+  @JoinColumn({ name: 'userId' })
   user: Users;
 }
