@@ -168,15 +168,15 @@ export default function dashboard() {
 
 
     return (
-        <div className={styles.fondo}>
+        <div className={styles.fondo} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
 
         {!isLogged ? (<AlertSignIn></AlertSignIn>) : (
 
-<main className="flex flex-col max-w-screen-2xl pt-44 pb-36">
+<main className="flex flex-col max-w-screen-2xl pt-44 pb-36 items-center">
 
-<section className="flex flex-row-reverse justify-evenly items-center">
+<section className="flex flex-col md:flex-row-reverse justify-evenly items-center w-full">
 
-<div className="flex flex-col flex-wrap max-w-screen-xl items-center text-wrap  ">
+<div className="flex flex-col flex-wrap max-w-screen-xl items-center text-wrap text-center md:text-left">
 <p className={`${bebas.variable} font-sans 
             text-4xl text-rose-800
             self-center pb-6
@@ -188,7 +188,6 @@ export default function dashboard() {
             `}>BIENVENIDO/A</h1>
 <h2 className={`${josefin.variable} font-sans 
             text-5xl text-white uppercase self-center
-            
             `}> {userName} </h2>
 
 
@@ -264,9 +263,9 @@ export default function dashboard() {
 </section>
 
 {membershipType === 'creator' && (
-  <section className="">
+  <section className="w-full">
     <img src="/images/contenidoSubido.png" className="max-w-lg flex ml-auto mr-auto pt-12 "/>   
-
+    
     <div className="flex flex-col max-w-9xl flex-wrap pt- items-center">
       <h1 className={`${josefin.variable} font-sans text-6xl text-rose-800 max-w-[60vw] text-center pb-6`}>
         AÚN NO HAS SUBIDO COMICS!
@@ -282,7 +281,7 @@ export default function dashboard() {
         <h2 className={`${josefin.variable} font-sans text-4xl text-rose-800 text-center pt-10`}>Comics Pendientes</h2>
         <div className="flex flex-row flex-wrap justify-center mt-10 w-screen">
           {userComics.filter(comic => !comic.isActive).map((comic, index) => (
-            <div key={index} className="flex flex-col items-center mb-8 mx-6">
+            <div key={index} className="flex flex-col items-center mb-8">
               <div
                 className="relative p-2 border-4 border-red-800 border-opacity-60 shadow-lg w-72 h-96 cursor-pointer overflow-hidden rounded-2xl"
                 onClick={() => router.push(`/all-comics/${comic.id}`)}

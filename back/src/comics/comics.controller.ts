@@ -13,7 +13,7 @@ import { ComicsService } from './comics.service';
 import { Comic } from './interfaces/comic.interface';
 import { title } from 'process';
 import { Comics } from './comics.entity';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('comic')
 @Controller('comics')
@@ -21,11 +21,15 @@ export class ComicsController {
   constructor(private readonly comicsService: ComicsService) {}
 
   @Get()
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número de página'})
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Número de elementos por página'})
   getComics(@Query('page') page?: number, @Query('limit') limit?: number) {
     return this.comicsService.getAllComics(page, limit);
   }
 
   @Get('inactive')
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número de página'})
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Número de elementos por página'})
   getInactiveComics(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -39,6 +43,8 @@ export class ComicsController {
   }
 
   @Get('active')
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número de página'})
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Número de elementos por página'})
   getActiveComics(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -51,8 +57,11 @@ export class ComicsController {
     return this.comicsService.getActiveComics(Number(page), Number(limit));
   }
 
-  /* @Get('seeder/:id')
-  addComics(@Param('id') id: string) {
+
+  /* 
+  @Get('seeder/:id')
+  addComics(@Param('id', ParseUUIDPipe) id: string) {
+
     return this.comicsService.addComics(id);
   } */
 
@@ -76,7 +85,22 @@ export class ComicsController {
     return this.comicsService.getComicByType(typecomic);
   }
   @Post(':id')
-  createComic(@Param('id') id: string, @Body() comic: Partial<Comics>) {
+  @ApiBody({
+    schema: {
+      example: {
+        title: 'Marvel',
+        description:
+          'Este comic tiene mucha accion, peleas y cuanta con un gran gion',
+        categoryname: 'Aventura, Pelea, XXX',
+        idioma: 'Español',
+        typecomic: 'Manga',
+        author: 'Batman',
+        data_post: '1990-07-25',
+        folderName: 'Primer capitulo',
+      },
+    },
+  })
+  createComic(@Param('id', ParseUUIDPipe) id: string, @Body() comic: Partial<Comics>) {
     return this.comicsService.createComic(id, comic);
   }
 
@@ -91,7 +115,7 @@ export class ComicsController {
   }
 
   @Delete(':id')
-  deleteComic(@Param('id') id: string) {
+  deleteComic(@Param('id', ParseUUIDPipe) id: string) {
     return this.comicsService.deleteComic(id);
   }
 }

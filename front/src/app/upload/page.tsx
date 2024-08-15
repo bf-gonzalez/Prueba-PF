@@ -18,6 +18,7 @@ export default function UploadPage() {
   const [categories, setCategories] = useState({ categories: [], typeComic: null, language: null });
   const [membershipType, setMembershipType] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [folderNameError, setFolderNameError] = useState<string | null>(null);
 
   useEffect(() => {
     const decodedUser = localStorage.getItem("decodedUser");
@@ -30,6 +31,20 @@ export default function UploadPage() {
       setMembershipType(null);
     }
   }, [user]);
+
+  const validateFolderName = (name: string) => {
+    if (name.length < 3) {
+      setFolderNameError('El nombre del cómic debe tener al menos 3 letras');
+    } else {
+      setFolderNameError(null);
+    }
+  };
+
+  const handleFolderNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.value;
+    setFolderName(name);
+    validateFolderName(name);
+  };
 
   const handleComicDataChange = (data) => {
     setComicData(data);
@@ -75,9 +90,14 @@ export default function UploadPage() {
                   type="text"
                   placeholder="Nombre del Cómic"
                   value={folderName}
-                  onChange={(e) => setFolderName(e.target.value)}
+                  onChange={handleFolderNameChange}
                   className="py-2 px-4 border-2 rounded-lg text-white border-rose-800 bg-black bg-opacity-30 w-full"
                 />
+                {folderNameError && (
+                  <p className={`text-red-500 text-xs italic mt-2 ${folderNameError ? 'visible' : 'invisible'}`}>
+                    {folderNameError}
+                  </p>
+                )}
               </div>
               <div className="w-full mb-4">
                 <textarea
@@ -90,25 +110,19 @@ export default function UploadPage() {
                 <div className="text-right text-sm text-gray-500">{description.length}/256</div>
               </div>
             </div>
-            {comicData && (
-              <div className="mt-4 p-4 border rounded bg-gray-100">
-                <h3 className="text-lg font-bold">Objeto enviado al backend:</h3>
-                <pre className="text-sm">{JSON.stringify(comicData, null, 2)}</pre>
-              </div>
-            )}
             <div className="w-full mb-4 flex flex-col items-center">
               <CategorySelector onChange={handleCategoryChange} />
             </div>
-            <div className="w-full mb-4 flex flex-col items-center">
-              <ImageUpload
-                folderName={folderName}
-                description={description}
-                onComicDataChange={handleComicDataChange}
-                onUploadSuccess={resetFields}
-                uploadMode={uploadMode}
-                categories={categories}
-              />
-            </div>
+            <ImageUpload
+              folderName={folderName}
+              description={description}
+              onComicDataChange={handleComicDataChange}
+              onUploadSuccess={resetFields}
+              uploadMode={uploadMode}
+              categories={categories}
+              isUploadDisabled={folderName.length < 3}
+              setFolderNameError={setFolderNameError}
+            />
           </div>
         </section>
       )}

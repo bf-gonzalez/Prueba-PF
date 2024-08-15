@@ -8,13 +8,14 @@ import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useRouter } from 'next/navigation';
 
-const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSuccess, uploadMode, categories }) => {
+const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSuccess, uploadMode, categories, isUploadDisabled, setFolderNameError }) => {
   const [images, setImages] = useState<(File | null)[]>([]);
   const [imageUrls, setImageUrls] = useState<(string | null)[]>([]);
   const [previewUrls, setPreviewUrls] = useState<(string | null)[]>([]);
   const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState('');
   const router = useRouter();
+  const [showError, setShowError] = useState(false);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('decodedUser'));
@@ -110,6 +111,15 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
     }
   };
 
+  const handleUploadClick = () => {
+    if (isUploadDisabled) {
+      setShowError(true);
+      setFolderNameError('El nombre del cómic debe tener al menos 3 letras');
+    } else {
+      handleUpload();
+    }
+  };
+
   const resetFields = () => {
     setImages([]);
     setImageUrls([]);
@@ -138,7 +148,13 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
         </div>
       </div>
       <div className="w-full mb-4 flex flex-col items-center">
-        <button onClick={handleUpload} className="mt-4 px-4 py-2 bg-[#F5C702] text-gray-800 rounded hover:bg-blue-700 hover:text-white transition-colors duration-300">Subir Cómic</button>
+        <button 
+          onClick={handleUploadClick} 
+          className={`mt-4 px-4 py-2 rounded ${isUploadDisabled ? 'bg-gray-400 text-gray-800 cursor-not-allowed' : 'bg-[#F5C702] text-gray-800 hover:bg-blue-700 hover:text-white transition-colors duration-300'}`}
+          disabled={isUploadDisabled}
+        >
+          Subir Cómic
+        </button>
       </div>
     </div>
   );

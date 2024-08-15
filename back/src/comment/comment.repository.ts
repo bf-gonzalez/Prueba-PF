@@ -100,6 +100,7 @@ export class CommentsRepository{
         }
 
         await this.commentsRepository.delete({id})
+        return 'Comentario eliminado'
     }
 
     
