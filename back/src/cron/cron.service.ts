@@ -124,8 +124,7 @@ export class CronService {
                             <p>¡No abandones una historia épica a medio camino! </p>
                             <img class="batman" src="https://res.cloudinary.com/dyeji7bvg/image/upload/v1723527437/Group_14_xytobf.png">
                             <p>Renueva tu membresía ahora y sigue disfrutando de tus aventuras sin interrupciones.</p>
-                          <button class="botoncreador" onclick="window.open('https://www.tu-url.com/renovar', '_blank')">Inicio</button>
-                        </div>
+                            <a href="https://comiccraft.vercel.app/membership" style="background-color: #ffcc00; color: #333; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Pagar</a>
                       </div>
                       <div class="footer">
                       <p>&copy; 2024 ComiCraft. Todos los derechos reservados.</p>

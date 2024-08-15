@@ -168,7 +168,7 @@ export class MembershipsRepository {
                     <p>Comienza a disfrutar de los cómics ahora mismo:</p>
                     <img class="batman" src="https://res.cloudinary.com/dyeji7bvg/image/upload/v1723517901/Group_13_1_jaudze.png">
                     <p>Haz clic en el botón a continuación para empezar a leer.</p>
-                    <button class="botoncreador" onclick="window.open('https://www.tu-url.com/comics', '_blank')">Comics</button>
+                    <a href="https://comiccraft.vercel.app/all-comics" style="background-color: #ffcc00; color: #333; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Comics</a>
                   </div>
                 </div>
                 <div class="footer">
@@ -271,7 +271,7 @@ export class MembershipsRepository {
                     <p>Comienza a disfrutar de los cómics ahora mismo:</p>
                     <img class="batman" src="https://res.cloudinary.com/dyeji7bvg/image/upload/v1723517152/Group_11_ujqzlc.png">
                     <p>Haz clic en el botón a continuación para empezar a leer.</p>
-                    <button class="botoncreador" onclick="window.open('https://www.tu-url.com/comics', '_blank')">Comics</button>
+                   <a href="https://comiccraft.vercel.app/all-comics" style="background-color: #ffcc00; color: #333; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Comics</a>
                   </div>
                 </div>
                 <div class="footer">
@@ -374,7 +374,7 @@ export class MembershipsRepository {
                     <p>Comienza tu aventura como creador:</p>
                     <img class="batman" src="https://res.cloudinary.com/dyeji7bvg/image/upload/v1723509050/Group_7_1_h8ejct.png">
                     <p>Haz clic en el botón a continuación para empezar a crear y compartir tus mejores historias.</p>
-                    <button class="botoncreador" onclick="window.open('https://www.tu-url.com', '_blank')">¡Inicio!</button>
+                    <a href="https://comiccraft.vercel.app/update" style="background-color: #ffcc00; color: #333; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Crea</a>
                   </div>
                 </div>
                 <div class="footer">

@@ -241,7 +241,7 @@ export class UsersRepository {
                   <p>También queremos invitarte a que ¡TÚ!</p>
                   <img class="batman" src="https://res.cloudinary.com/dyeji7bvg/image/upload/v1722142238/Group_4_1_lvwly7.png">
                   <p>Te conviertas en el nuevo Autor estrella de ComiCraft para que la gente conozca tus mejores historias</p>
-                  <button class="botoncreador" onclick="window.open('https://www.google.com', '_blank')">¡Únete!</button>
+                  <a href="https://comiccraft.vercel.app/membership" style="background-color: #ffcc00; color: #333; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">¡Unete!</a>
                 </div>
               </div>
               <div class="footer">
