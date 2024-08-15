@@ -21,15 +21,35 @@ export class ComicsController {
   constructor(private readonly comicsService: ComicsService) {}
 
   @Get()
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número de página'})
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Número de elementos por página'})
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número de página',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Número de elementos por página',
+  })
   getComics(@Query('page') page?: number, @Query('limit') limit?: number) {
     return this.comicsService.getAllComics(page, limit);
   }
 
   @Get('inactive')
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número de página'})
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Número de elementos por página'})
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número de página',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Número de elementos por página',
+  })
   getInactiveComics(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -43,8 +63,18 @@ export class ComicsController {
   }
 
   @Get('active')
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número de página'})
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Número de elementos por página'})
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número de página',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Número de elementos por página',
+  })
   getActiveComics(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -57,13 +87,10 @@ export class ComicsController {
     return this.comicsService.getActiveComics(Number(page), Number(limit));
   }
 
-
-  /* 
   @Get('seeder/:id')
   addComics(@Param('id', ParseUUIDPipe) id: string) {
-
     return this.comicsService.addComics(id);
-  } */
+  }
 
   @Get(':id')
   getComicById(@Param('id') id: string) {
@@ -100,7 +127,10 @@ export class ComicsController {
       },
     },
   })
-  createComic(@Param('id', ParseUUIDPipe) id: string, @Body() comic: Partial<Comics>) {
+  createComic(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() comic: Partial<Comics>,
+  ) {
     return this.comicsService.createComic(id, comic);
   }
 

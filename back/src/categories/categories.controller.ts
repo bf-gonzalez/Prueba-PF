@@ -7,10 +7,10 @@ import { CategoriesService } from './categories.service';
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
-  /*  @Get('seeder')
+  @Get('seeder')
   addCategories() {
     return this.categoriesService.addCategories();
-  } */
+  }
 
   // @Get ()
   // getCategories(){
