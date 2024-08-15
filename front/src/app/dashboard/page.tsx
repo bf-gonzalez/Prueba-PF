@@ -244,7 +244,7 @@ export default function dashboard() {
 <section className="pt-[6vh] text-center">
 
 {isLogged && !googleToken && (
-<a href={`${process.env.NEXT_PUBLIC_API_URL}/newusername`}>
+<a href={`${window.location.origin}/newusername`}>
   <h2 className={`${josefin.variable} font-sans 
   text-yellow-400 cursor-pointer text-5xl pb-[2vh] `}>
   CAMBIAR NOMBRE DE USUARIO</h2>
@@ -252,7 +252,7 @@ export default function dashboard() {
 )}
 
 {isLogged && !googleToken && (
-<a href={`${process.env.NEXT_PUBLIC_API_URL}/newpassword`}>
+<a href={`${window.location.origin}/newpassword`}>
   <h2 className={`${josefin.variable} font-sans 
   text-yellow-400 cursor-pointer text-5xl`}>
   CAMBIAR CONTRASEÑA</h2>
