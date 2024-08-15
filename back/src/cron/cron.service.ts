@@ -14,7 +14,7 @@ export class CronService {
     this.scheduleMembershipCheck();
   }
   scheduleMembershipCheck() {
-    cron.schedule('04 21 * * *', () => {
+    cron.schedule('50 7 * * *', () => {
       console.log('ejecutando');
       this.checkMemberships();
     });
