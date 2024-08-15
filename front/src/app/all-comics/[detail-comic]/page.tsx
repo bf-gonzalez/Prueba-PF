@@ -111,6 +111,22 @@ const ComicDetailPage = () => {
       return;
     }
 
+    // Verificar el tipo de membresía
+    const isMonthlyMember = user.MembershipType === 'monthly_member';
+    const isAnnualMember = user.MembershipType === 'annual_member';
+    const isCreator = user.MembershipType === 'creator';
+    const isCreatorViewingOwnComic = isCreator && user.username === comic.user.username;
+
+    if (isMonthlyMember || (!isAnnualMember && !isCreatorViewingOwnComic)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Acceso denegado',
+        text: 'Solo los miembros anuales y los creadores pueden comentar en los cómics.',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+
     const commentData = {
       userId: user.id,
       content: newComment,

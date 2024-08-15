@@ -13,6 +13,9 @@ export default function FolderPage() {
   const router = useRouter();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const decodedUser = JSON.parse(localStorage.getItem("decodedUser"));
+  const isMonthlyMember = decodedUser?.MembershipType === 'monthly_member';
+
   useEffect(() => {
     const fetchImages = async () => {
       try {
@@ -103,7 +106,12 @@ export default function FolderPage() {
       {images.length > 0 && (
         <div className="relative mt-4 w-full flex justify-center">
           <button onClick={handlePrev} className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded">Anterior</button>
-          <img id="currentImage" src={images[currentIndex].secure_url} alt={images[currentIndex].public_id} className="w-full h-auto z-10 relative" />
+          <img
+            id="currentImage"
+            src={isMonthlyMember ? images[currentIndex].secure_url.replace('/upload/', '/upload/q_50/') : images[currentIndex].secure_url}
+            alt={images[currentIndex].public_id}
+            className="w-full h-auto z-10 relative"
+          />
           <button onClick={handleNext} className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded">Siguiente</button>
         </div>
       )}
