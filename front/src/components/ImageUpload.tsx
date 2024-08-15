@@ -73,7 +73,22 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
     }
 
     try {
-      const allUploaded = await uploadImages(images, folderName, userName, imageUrls, setImageUrls);
+      // Obtener todos los cómics del usuario
+      const userComicsResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics?userId=${userId}`);
+      const userComics = userComicsResponse.data;
+
+      // Verificar si ya existe un cómic con el mismo nombre y autor
+      let newFolderName = folderName;
+      let newTitle = folderName;
+      let suffix = 1;
+
+      while (userComics.some(comic => comic.title === newTitle && comic.author === userName)) {
+        suffix++;
+        newTitle = `${folderName} ${suffix}`;
+        newFolderName = `${folderName} ${suffix} @${userName}`;
+      }
+
+      const allUploaded = await uploadImages(images, newFolderName, userName, imageUrls, setImageUrls);
 
       if (allUploaded) {
         try {
@@ -81,11 +96,11 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
           const username = userResponse.data.username;
 
           const comicData = {
-            title: folderName,
+            title: newTitle,
             description: description,
             author: username,
             data_post: new Date().toISOString().split('T')[0],
-            folderName: `${folderName} @${userName}`,
+            folderName: newFolderName,
             categoryname: categories.categories.map(cat => cat.value).join(', '),
             typecomic: categories.typeComic ? categories.typeComic.value : null,
             idioma: categories.language ? categories.language.value : null,
