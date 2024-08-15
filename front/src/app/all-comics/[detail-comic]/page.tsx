@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import styles from "@/components/backgrounds/experiment.module.css";
@@ -16,7 +16,7 @@ const josefin = Josefin_Sans({
 const bebas = Bebas_Neue({
   subsets: ["latin"],
   weight: ["400"],
-  variable: "--font-bebas",
+  variable: '--font-bebas',
 });
 
 const ComicDetailPage = () => {
@@ -29,7 +29,6 @@ const ComicDetailPage = () => {
   const [newComment, setNewComment] = useState('');
   const router = useRouter();
   const [user, setUser] = useState(null);
-  const [topComics, setTopComics] = useState([]);
 
   useEffect(() => {
     const decodedUser = localStorage.getItem('decodedUser');
@@ -77,19 +76,6 @@ const ComicDetailPage = () => {
       fetchComic();
     }
   }, [detailComic]);
-
-  useEffect(() => {
-    const fetchTopComics = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics/active?limit=5`);
-        setTopComics(response.data);
-      } catch (error) {
-        console.error('Error fetching top comics:', error);
-      }
-    };
-
-    fetchTopComics();
-  }, []);
 
   const fetchImages = async (folderName) => {
     try {
@@ -153,7 +139,27 @@ const ComicDetailPage = () => {
     return <div>Comic not found</div>;
   }
 
-  const isLimitedUser = !user || !['monthly_member', 'annual_member', 'creator'].includes(user.MembershipType);
+  const isLimitedUser = !user || !['monthly_member', 'annual_member', 'creator'].includes(user?.MembershipType);
+  const isCreatorViewingOwnComic = user && user.MembershipType === 'creator' && user.username === comic.user.username;
+
+  const canViewComic = () => {
+    if (!user) return false;
+    if (user.MembershipType === 'annual_member' || isCreatorViewingOwnComic) {
+      return true;
+    }
+
+    if (user.MembershipType === 'monthly_member') {
+      const paymentDate = new Date(user.memberships.payment_date);
+      const comicDate = new Date(comic.data_post);
+      const oneWeekAfterPayment = new Date(paymentDate);
+      oneWeekAfterPayment.setDate(paymentDate.getDate() + 7);
+
+      const today = new Date();
+      return today >= oneWeekAfterPayment && today >= comicDate;
+    }
+
+    return false;
+  };
 
   return (
     <main className={styles.fondo}>
@@ -195,9 +201,9 @@ const ComicDetailPage = () => {
               <p className={`${bebas.variable} font-sans text-4xl text-rose-700 pr-3`}>Idioma:</p>
               <p className={`${bebas.variable} font-sans text-4xl text-white`}>{comic.idioma || 'N/A'}</p>
             </div>
-            {isLimitedUser && (
+            {isLimitedUser && !canViewComic() && (
               <p className={`${bebas.variable} font-sans text-4xl text-yellow-400 text-center mt-16`}>
-                Para disfrutar de este contenido compra una subscripción!
+                Para disfrutar de este contenido compra una subscripción o espera una semana desde tu última fecha de pago!
               </p>
             )}
           </div>
@@ -209,7 +215,7 @@ const ComicDetailPage = () => {
                 <img
                   src={image.secure_url}
                   alt={`Comic image ${index + 1}`}
-                  className={`w-[10vw] h-[28vh] cursor-pointer ${isLimitedUser && index >= 2 ? 'blur-sm' : ''}`}
+                  className={`w-[10vw] h-[28vh] cursor-pointer ${isLimitedUser && !canViewComic() && index >= 2 ? 'blur-sm' : ''}`}
                   onClick={() => !isLimitedUser && router.push(`/upload/${comic.folderName}?page=${index + 1}`)}
                 />
                 <div className="absolute bottom-0 right-0 bg-black bg-opacity-50 text-white px-2 py-1 rounded-tl">
@@ -227,10 +233,12 @@ const ComicDetailPage = () => {
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             className="p-4 mb-4 border-2 border-rose-900 rounded bg-[#01061A] text-white placeholder-gray-500 w-[30vw] h-[12vh]"
+            disabled={isLimitedUser && !canViewComic()}
           />
           <button
             onClick={handleCommentSubmit}
             className="mt-2 bg-blue-500 text-white hover:bg-blue-700 transition-colors duration-300 w-[10vw] h-[8vh] rounded-xl"
+            disabled={isLimitedUser && !canViewComic()}
           >
             Enviar Comentario
           </button>
@@ -253,45 +261,9 @@ const ComicDetailPage = () => {
             <p className='text-center text-3xl pt-8'>No hay comentarios aún.</p>
           )}
         </div>
-        <img src="/images/masComics.png"
-          className="max-w-sm ml-auto mr-auto pb-4 "
-          height={400} />
-        <div className="flex flex-row flex-wrap justify-center mt-20 w-screen">
-          {topComics.slice(0, 8).map((comic, index) => (
-            <div key={index} className="flex flex-col items-center mb-8 mx-6">
-              <div
-                className="relative p-2 border-4 border-red-800 border-opacity-60 shadow-lg w-72 h-96 cursor-pointer overflow-hidden rounded-2xl"
-                onClick={() => router.push(`/all-comics/${comic.id}`)}
-              >
-                <div className="absolute inset-0 flex items-center justify-center ">
-                  {comic.folderName.startsWith('http') ? (
-                    <img
-                      src={comic.folderName}
-                      alt={comic.title}
-                      className="w-72 h-96 object-cover object-center p-4"
-                    />
-                  ) : (
-                    <img
-                      src={`/api/images?folder=${comic.folderName}`}
-                      alt={comic.title}
-                      className="w-72 h-96 object-cover object-center p-4"
-                    />
-                  )}
-                </div>
-                <div className="opacity-0 absolute inset-0 flex flex-col justify-center items-center p-4 bg-black bg-opacity-0 hover:opacity-100 hover:bg-opacity-70 rounded-xl duration-300">
-                  <p className={`${bebas.variable} text-center mt-4 text-lg font-bold uppercase`}>{comic.description}</p>
-                </div>
-              </div>
-              <p className="text-lg text-gray-400">{comic.categoryname}</p>
-              <h1 className={`${bebas.variable} font-sans text-3xl font-bold mt-2 w-72 text-center text-yellow-400 `}>{comic.title}</h1>
-              <p className={`${bebas.variable} font-sans text-2xl text-white`}>{comic.author}</p>
-              <p className={`${bebas.variable} text-lg font-bold uppercase text-rose-700`}>{comic.data_post}</p>
-            </div>
-          ))}
-        </div>
       </section>
     </main>
   );
-};
+};  
 
 export default ComicDetailPage;

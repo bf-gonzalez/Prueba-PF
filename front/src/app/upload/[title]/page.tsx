@@ -88,13 +88,14 @@ export default function FolderPage() {
         </div>
         <div className="relative">
           <button onClick={toggleDropdown} className="border-red-800 text-white p-2 rounded">Páginas</button>
+          <span className="text-white ml-2">{currentIndex + 1} / {images.length}</span>
           {dropdownOpen && (
-            <ul className="absolute bg-white text-black mt-2 rounded shadow-lg max-h-40 overflow-y-auto">
+            <ul className="absolute bg-white text-black mt-2 rounded shadow-lg max-h-40 overflow-y-auto z-50">
               {images.map((image, index) => (
                 <li key={index} className="p-2 hover:bg-gray-200 cursor-pointer" onClick={() => setCurrentIndex(index)}>
                   Página {index + 1}
                 </li>
-              )).slice(0, 5)}
+              ))}
             </ul>
           )}
         </div>
@@ -102,7 +103,7 @@ export default function FolderPage() {
       {images.length > 0 && (
         <div className="relative mt-4 w-full flex justify-center">
           <button onClick={handlePrev} className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded">Anterior</button>
-          <img id="currentImage" src={images[currentIndex].secure_url} alt={images[currentIndex].public_id} className="w-full h-auto" />
+          <img id="currentImage" src={images[currentIndex].secure_url} alt={images[currentIndex].public_id} className="w-full h-auto z-10 relative" />
           <button onClick={handleNext} className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded">Siguiente</button>
         </div>
       )}

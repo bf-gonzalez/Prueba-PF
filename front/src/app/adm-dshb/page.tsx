@@ -34,6 +34,9 @@ export default function AdminDashboard() {
     const [images, setImages] = useState({});
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [users, setUsers] = useState([]);
+    const [pendingComics, setPendingComics] = useState([]);
+    const [activeComics, setActiveComics] = useState([]);
+    const [updateFlag, setUpdateFlag] = useState<boolean>(false);
 
     useEffect(() => {
         const decodedUser = localStorage.getItem("decodedUser");
@@ -61,6 +64,8 @@ export default function AdminDashboard() {
                     userComics.forEach(comic => {
                         fetchImages(comic.folderName, comic.id);
                     });
+
+                    setActiveComics(comics.filter(comic => comic.isActive));
                 })
                 .catch(error => {
                     console.error("Error fetching comics:", error);
@@ -81,6 +86,19 @@ export default function AdminDashboard() {
         };
 
         fetchUsers();
+    }, []);
+
+    const fetchPendingComics = async () => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics`);
+            setPendingComics(response.data.filter(comic => !comic.isActive));
+        } catch (error) {
+            console.error('Error fetching pending comics:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPendingComics();
     }, []);
 
     const fetchImages = async (folderName, comicId) => {
@@ -130,6 +148,30 @@ export default function AdminDashboard() {
 
     const handleUploadSuccess = (imageUrl) => {
         console.log("Upload successful, image URL:", imageUrl);
+    };
+
+    const handleComicAccepted = (acceptedComicId) => {
+        setPendingComics((prevComics) => prevComics.filter(comic => comic.id !== acceptedComicId));
+        setActiveComics((prevComics) => {
+            const acceptedComic = pendingComics.find(comic => comic.id === acceptedComicId);
+            return acceptedComic ? [...prevComics, { ...acceptedComic, isActive: true }] : prevComics;
+        });
+        fetchActiveComics(); // Llamar a la función para actualizar los cómics activos
+    };
+
+    const fetchActiveComics = async () => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics`);
+            setActiveComics(response.data.filter(comic => comic.isActive));
+        } catch (error) {
+            console.error("Error fetching active comics:", error);
+        }
+    };
+
+    const handleComicDeleted = (deletedComicId) => {
+        setPendingComics((prevComics) => prevComics.filter(comic => comic.id !== deletedComicId));
+        setUpdateFlag((prevFlag) => !prevFlag); // Alternar el estado de actualización
+        fetchPendingComics(); // Llamar a la función para actualizar los cómics pendientes
     };
 
     if (!isAdmin) {
@@ -186,7 +228,7 @@ export default function AdminDashboard() {
                         className="max-w-[60vw] pt-12 pb mx-auto"
                         alt="PENDING-COMICS"
                     />
-                    <AllPendingComicsComponent />
+                    <AllPendingComicsComponent pendingComics={pendingComics} onComicAccepted={handleComicAccepted} onComicDeleted={handleComicDeleted} fetchPendingComics={fetchPendingComics} setUpdateFlag={setUpdateFlag} />
                 </section>
                 <section className="flex flex-col items-center">
                     <img
@@ -194,7 +236,7 @@ export default function AdminDashboard() {
                         className="max-w-[23vw] pt-12 pb mx-auto"
                         alt="COMICS"
                     />
-                    <AllComicsComponent />
+                    <AllComicsComponent comics={activeComics} onComicDeleted={handleComicDeleted} fetchPendingComics={fetchPendingComics} setUpdateFlag={setUpdateFlag} />
                 </section>
                 {membershipType === 'creator' && (
                     <section className="">
