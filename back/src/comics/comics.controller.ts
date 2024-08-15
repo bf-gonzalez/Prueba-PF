@@ -57,10 +57,13 @@ export class ComicsController {
     return this.comicsService.getActiveComics(Number(page), Number(limit));
   }
 
+
+  /* 
   @Get('seeder/:id')
   addComics(@Param('id', ParseUUIDPipe) id: string) {
+
     return this.comicsService.addComics(id);
-  }
+  } */
 
   @Get(':id')
   getComicById(@Param('id') id: string) {
