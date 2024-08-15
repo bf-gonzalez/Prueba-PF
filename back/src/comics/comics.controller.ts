@@ -51,10 +51,10 @@ export class ComicsController {
     return this.comicsService.getActiveComics(Number(page), Number(limit));
   }
 
-  @Get('seeder/:id')
+  /* @Get('seeder/:id')
   addComics(@Param('id') id: string) {
     return this.comicsService.addComics(id);
-  }
+  } */
 
   @Get(':id')
   getComicById(@Param('id') id: string) {
@@ -67,12 +67,12 @@ export class ComicsController {
   }
 
   @Get('idioma/:idioma')
-  getComicByIdioma(@Param('idioma') idioma: string){
+  getComicByIdioma(@Param('idioma') idioma: string) {
     return this.comicsService.getComicByIdioma(idioma);
   }
 
   @Get('typecomic/:typecomic')
-  getComicByType(@Param('typecomic') typecomic: string){
+  getComicByType(@Param('typecomic') typecomic: string) {
     return this.comicsService.getComicByType(typecomic);
   }
   @Post(':id')
