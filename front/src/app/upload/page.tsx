@@ -7,6 +7,7 @@ import { UserContext } from '@/context/userContext';
 import CategorySelector from '@/components/ImageUploadHelper/CategorySelector';
 import AlertSignIn from '@/components/alertSignIn/AlertSignIn';
 import axios from 'axios';
+import ChatbotIcon from '@/components/Chatbot/ChatbotIcon';
 
 export default function UploadPage() {
   const { isLogged, user } = useContext(UserContext);
@@ -87,6 +88,7 @@ export default function UploadPage() {
 
   return (
     <main className={styles.fondo}>
+      <ChatbotIcon />
       {!showSubscriptionPage ? (
         <AlertSignIn />
       ) : (

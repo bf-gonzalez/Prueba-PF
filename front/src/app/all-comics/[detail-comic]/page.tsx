@@ -6,6 +6,7 @@ import axios from 'axios';
 import styles from "@/components/backgrounds/experiment.module.css";
 import { Bebas_Neue, Josefin_Sans } from 'next/font/google';
 import Swal from 'sweetalert2';
+import ChatbotIcon from '@/components/Chatbot/ChatbotIcon';
 
 const josefin = Josefin_Sans({
   subsets: ['latin'],
@@ -179,6 +180,7 @@ const ComicDetailPage = () => {
 
   return (
     <main className={styles.fondo}>
+      <ChatbotIcon />
       <section className="pt-36 flex flex-col items-center p-4 ">
         <div className="flex flex-row pb-16 ">
           {images.length > 0 && (

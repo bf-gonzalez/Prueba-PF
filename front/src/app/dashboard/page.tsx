@@ -11,6 +11,7 @@ import decodeGJwt from "@/utils/decodeGJWT";
 import BanUserButton from "@/components/banUserBtn/BanUserBtn";
 import AllComicsComponent from "../../components/allComicsComponent/AllComicsComponent";
 import AllUsersComponent from "@/components/allUsersComponent/AllUsersComponent";
+import ChatbotIcon from '@/components/Chatbot/ChatbotIcon';
 
 const josefin = Josefin_Sans({
     subsets:['latin'],
@@ -376,7 +377,7 @@ export default function dashboard() {
         )}
 
         <ProfilePictureModal isOpen={isModalOpen} onClose={handleCloseModal} onImageSelect={handleImageSelect} handleUpload={handleUpload} setUser={setUser} onUploadSuccess={handleUploadSuccess} />
-
+        <ChatbotIcon />
         </div>
     )
 }

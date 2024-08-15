@@ -10,6 +10,7 @@ import SearchBar from '../../components/searchBar/SearchBar';
 import DateFilter from '../../components/DateFilter';
 import CategoryFilter from '../../components/CategoryFilter';
 import { TbMoodSadDizzy } from "react-icons/tb";
+import ChatbotIcon from '@/components/Chatbot/ChatbotIcon';
 
 const bebas = Bebas_Neue({
   subsets: ["latin"],
@@ -142,6 +143,7 @@ const AllComicsPage = () => {
 
   return (
     <main className={styles.fondo}>
+      <ChatbotIcon />
       <section className="flex flex-col items-center pt-36 pb-40 ">
         <div className="flex flex-col self-start pl-12">
           <SearchBar onSearch={handleSearch} initialQuery={searchQuery} placeholder={'Buscar Comics'} />

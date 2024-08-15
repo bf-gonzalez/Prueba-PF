@@ -57,8 +57,7 @@ function Navbar() {
     };
 
     const showSubscriptionButton = pathname !== '/newusername' && pathname !== '/newpassword' && pathname !== '/profile-complete' && pathname !== '/membership' && pathname !== '/login' && pathname !== '/register' && !['annual_member', 'monthly_member', 'creator'].includes(membershipType);
-    const showUploadButton = pathname !== '/upload' && pathname !== '/newusername' && pathname !== '/newpassword' && pathname !== '/profile-complete' && pathname !== '/membership' && pathname !== '/login' && pathname !== '/register' && !['creator'].includes(membershipType) || isAdmin;
-    
+    const showUploadButton = (pathname !== '/upload' && pathname !== '/newusername' && pathname !== '/newpassword' && pathname !== '/profile-complete' && pathname !== '/membership' && pathname !== '/login' && pathname !== '/register' && membershipType === 'creator') || isAdmin;    
 
     return (
 <main>
