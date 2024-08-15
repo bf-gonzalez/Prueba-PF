@@ -10,6 +10,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(200).json(result.resources);
   } catch (error) {
     console.error('Error fetching images:', error);
-    res.status(500).json({ error: 'Error fetching images' });
+    if (error.http_code === 420) {
+      res.status(429).json({ error: 'Rate limit exceeded. Please try again later.' });
+    } else {
+      res.status(500).json({ error: 'Error fetching images' });
+    }
   }
 }

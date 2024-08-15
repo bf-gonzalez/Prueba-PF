@@ -7,6 +7,7 @@ import { UserContext } from '@/context/userContext';
 import CategorySelector from '@/components/ImageUploadHelper/CategorySelector';
 import AlertSignIn from '@/components/alertSignIn/AlertSignIn';
 import axios from 'axios';
+import ChatbotIcon from '@/components/Chatbot/ChatbotIcon';
 
 export default function UploadPage() {
   const { isLogged, user } = useContext(UserContext);
@@ -19,6 +20,8 @@ export default function UploadPage() {
   const [membershipType, setMembershipType] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [folderNameError, setFolderNameError] = useState<string | null>(null);
+  const [descriptionError, setDescriptionError] = useState<string | null>(null);
+  const [showError, setShowError] = useState(false);
 
   useEffect(() => {
     const decodedUser = localStorage.getItem("decodedUser");
@@ -40,10 +43,24 @@ export default function UploadPage() {
     }
   };
 
+  const validateDescription = (desc: string) => {
+    if (desc.length < 12) {
+      setDescriptionError('La descripción del Cómic debe tener al menos 12 letras');
+    } else {
+      setDescriptionError(null);
+    }
+  };
+
   const handleFolderNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;
     setFolderName(name);
     validateFolderName(name);
+  };
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const desc = e.target.value;
+    setDescription(desc);
+    validateDescription(desc);
   };
 
   const handleComicDataChange = (data) => {
@@ -61,15 +78,30 @@ export default function UploadPage() {
     setCategories(selectedCategories);
   };
 
+  const handleSubmit = () => {
+    validateFolderName(folderName);
+    validateDescription(description);
+    setShowError(true);
+  };
+
   const showSubscriptionPage = isLogged && (['creator'].includes(membershipType) || isAdmin);
 
   return (
     <main className={styles.fondo}>
+      <ChatbotIcon />
       {!showSubscriptionPage ? (
         <AlertSignIn />
       ) : (
         <section>
-          <div className="flex flex-col items-center justify-center mt-48 p-4">
+          <div className="flex flex-col items-center justify-center lg:mt-32 mt-32 p-2">
+            <section className='flex'>
+            <img
+          src="/images/mis3.png"
+          className="max-w-xs sm:max-w-md md:max-w-md lg:max-w-md mx-auto pb-6 md:pb-4"
+          alt="Instrucciones"
+        />
+            </section>
+
             <div className="flex flex-col items-center">
               <div className="flex space-x-4 mb-4">
                 <button
@@ -93,8 +125,8 @@ export default function UploadPage() {
                   onChange={handleFolderNameChange}
                   className="py-2 px-4 border-2 rounded-lg text-white border-rose-800 bg-black bg-opacity-30 w-full"
                 />
-                {folderNameError && (
-                  <p className={`text-red-500 text-xs italic mt-2 ${folderNameError ? 'visible' : 'invisible'}`}>
+                {showError && folderNameError && (
+                  <p className="text-red-500 text-xs italic mt-2">
                     {folderNameError}
                   </p>
                 )}
@@ -103,10 +135,15 @@ export default function UploadPage() {
                 <textarea
                   placeholder="Descripción del Cómic"
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={handleDescriptionChange}
                   className="py-2 px-4 border-2 rounded-lg text-white border-rose-800 bg-black bg-opacity-30 resize-none overflow-y-auto h-32 w-full"
                   maxLength={256}
                 />
+                {showError && descriptionError && (
+                  <p className="text-red-500 text-xs italic mt-2">
+                    {descriptionError}
+                  </p>
+                )}
                 <div className="text-right text-sm text-gray-500">{description.length}/256</div>
               </div>
             </div>
@@ -120,8 +157,9 @@ export default function UploadPage() {
               onUploadSuccess={resetFields}
               uploadMode={uploadMode}
               categories={categories}
-              isUploadDisabled={folderName.length < 3}
+              isUploadDisabled={folderName.length < 3 || description.length < 12}
               setFolderNameError={setFolderNameError}
+              setDescriptionError={setDescriptionError}
             />
           </div>
         </section>

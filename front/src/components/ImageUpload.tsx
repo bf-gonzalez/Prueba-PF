@@ -8,7 +8,7 @@ import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useRouter } from 'next/navigation';
 
-const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSuccess, uploadMode, categories, isUploadDisabled, setFolderNameError }) => {
+const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSuccess, uploadMode, isUploadDisabled, setFolderNameError, setDescriptionError, categories }) => {
   const [images, setImages] = useState<(File | null)[]>([]);
   const [imageUrls, setImageUrls] = useState<(string | null)[]>([]);
   const [previewUrls, setPreviewUrls] = useState<(string | null)[]>([]);
@@ -16,11 +16,12 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
   const [userId, setUserId] = useState('');
   const router = useRouter();
   const [showError, setShowError] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('decodedUser'));
     if (user && user.username && user.id) {
-      setUserName(user.username); // Cambiado a user.username
+      setUserName(user.username);
       setUserId(user.id);
     }
   }, []);
@@ -65,58 +66,94 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
   };
 
   const handleUpload = async () => {
-    const allUploaded = await uploadImages(images, folderName, userName, imageUrls, setImageUrls);
+    if (isUploadDisabled) {
+      setFolderNameError('El nombre del cómic debe tener al menos 3 letras');
+      setDescriptionError('La descripción del Cómic debe tener al menos 12 letras');
+      return;
+    }
 
-    if (allUploaded) {
-      try {
-        const userResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`);
-        const username = userResponse.data.username;
+    try {
+      // Obtener todos los cómics del usuario
+      const userComicsResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/comics?userId=${userId}`);
+      const userComics = userComicsResponse.data;
 
-        const comicData = {
-          title: folderName,
-          description: description,
-          author: username,
-          data_post: new Date().toISOString().split('T')[0],
-          folderName: `${folderName} @${userName}`, // Cambiado a userName
-          categoryname: categories.categories.map(cat => cat.value).join(', '),
-          typecomic: categories.typeComic ? categories.typeComic.value : null,
-          idioma: categories.language ? categories.language.value : null,
-        };
+      // Verificar si ya existe un cómic con el mismo nombre y autor
+      let newFolderName = folderName;
+      let newTitle = folderName;
+      let suffix = 1;
 
-        onComicDataChange(comicData);
-
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/comics/${userId}`, comicData);
-
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Cómic subido con éxito',
-          showConfirmButton: true,
-          timer: undefined
-        }).then(() => {
-          if (onUploadSuccess) {
-            onUploadSuccess();
-          }
-          resetFields();
-          router.push('/dashboard'); // Redirigir al dashboard
-        });
-      } catch (error) {
-        console.error('Error saving comic data:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Hubo un problema al guardar los datos del cómic!',
-        });
+      while (userComics.some(comic => comic.title === newTitle && comic.author === userName)) {
+        suffix++;
+        newTitle = `${folderName} ${suffix}`;
+        newFolderName = `${folderName} ${suffix} @${userName}`;
       }
+
+      const allUploaded = await uploadImages(images, newFolderName, userName, imageUrls, setImageUrls);
+
+      if (allUploaded) {
+        try {
+          const userResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`);
+          const username = userResponse.data.username;
+
+          const comicData = {
+            title: newTitle,
+            description: description,
+            author: username,
+            data_post: new Date().toISOString().split('T')[0],
+            folderName: newFolderName,
+            categoryname: categories.categories.map(cat => cat.value).join(', '),
+            typecomic: categories.typeComic ? categories.typeComic.value : null,
+            idioma: categories.language ? categories.language.value : null,
+          };
+
+          onComicDataChange(comicData);
+
+          await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/comics/${userId}`, comicData);
+
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Cómic subido con éxito',
+            showConfirmButton: true,
+            timer: undefined
+          }).then(() => {
+            if (onUploadSuccess) {
+              onUploadSuccess();
+            }
+            resetFields();
+            router.push('/dashboard');
+          });
+        } catch (error) {
+          console.error('Error saving comic data:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Hubo un problema al guardar los datos del cómic!',
+          });
+        }
+      }
+    } catch (error) {
+      setUploadError('Error subiendo las imágenes. Por favor, inténtalo de nuevo.');
     }
   };
 
   const handleUploadClick = () => {
-    if (isUploadDisabled) {
-      setShowError(true);
-      setFolderNameError('El nombre del cómic debe tener al menos 3 letras');
-    } else {
+    setShowError(true);
+    if (
+      !isUploadDisabled &&
+      categories.categories.length > 0 &&
+      categories.typeComic &&
+      categories.language &&
+      images.length >= 2
+    ) {
       handleUpload();
+    } else {
+      if (folderName.length < 3) {
+        setFolderNameError('El nombre del cómic debe tener al menos 3 letras');
+      }
+      if (description.length < 12) {
+        setDescriptionError('La descripción del Cómic debe tener al menos 12 letras');
+      }
     }
   };
 
@@ -150,11 +187,19 @@ const ImageUpload = ({ folderName, description, onComicDataChange, onUploadSucce
       <div className="w-full mb-4 flex flex-col items-center">
         <button 
           onClick={handleUploadClick} 
-          className={`mt-4 px-4 py-2 rounded ${isUploadDisabled ? 'bg-gray-400 text-gray-800 cursor-not-allowed' : 'bg-[#F5C702] text-gray-800 hover:bg-blue-700 hover:text-white transition-colors duration-300'}`}
-          disabled={isUploadDisabled}
+          className={`mt-4 px-4 py-2 rounded ${
+            isUploadDisabled ||
+            categories.categories.length === 0 ||
+            !categories.typeComic ||
+            !categories.language ||
+            images.length < 2
+              ? 'bg-gray-400 text-gray-800'
+              : 'bg-[#F5C702] text-gray-800 hover:bg-blue-700 hover:text-white transition-colors duration-300'
+          }`}
         >
           Subir Cómic
         </button>
+        {uploadError && <p className="text-red-500 text-xs italic mt-2">{uploadError}</p>}
       </div>
     </div>
   );

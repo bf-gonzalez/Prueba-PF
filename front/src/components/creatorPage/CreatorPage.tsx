@@ -18,11 +18,13 @@ interface CreatorPageProps {
 }
 
 const CreatorPage: React.FC<CreatorPageProps> = ({ creator }) => {
+  const profilePicture = creator.profilePicture === 'none' ? '/images/userIcon2.png' : creator.profilePicture;
+
   return (
     <main className="">
       <section className="flex flex-row max-w-screen-2xl pt-44 pb-36 justify-evenly items-center">
         <img
-          src={creator.profilePicture}
+          src={profilePicture}
           alt={creator.username}
           className="rounded-xl border-2 h-[48vh] border-rose-900 p-2
             object-cover object-center w-[50vw]"

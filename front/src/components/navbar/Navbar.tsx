@@ -57,6 +57,7 @@ function Navbar() {
     };
 
     const showSubscriptionButton = pathname !== '/newusername' && pathname !== '/newpassword' && pathname !== '/profile-complete' && pathname !== '/membership' && pathname !== '/login' && pathname !== '/register' && !['annual_member', 'monthly_member', 'creator'].includes(membershipType);
+    const showUploadButton = (pathname !== '/upload' && pathname !== '/newusername' && pathname !== '/newpassword' && pathname !== '/profile-complete' && pathname !== '/membership' && pathname !== '/login' && pathname !== '/register' && membershipType === 'creator') || isAdmin;    
 
     return (
 <main>
@@ -75,6 +76,13 @@ function Navbar() {
             </section>
 
             <section className="flex flex-row justify-end w-full md:w-auto space-x-4 md:space-x-12">
+
+
+            {showUploadButton && (
+                    <button type="button" onClick={() => router.push('/upload')}>
+                        <h1 className={`${bebas.variable} font-sans login cursor-pointer text-2xl md:text-4xl text-white hover:text-yellow-400 transition-all custom-transition duration-300 pl-2`}>SUBIR CÓMIC</h1>
+                    </button>
+                )}
 
 
                 {pathname !== '/all-comics' && pathname !== '/profile-complete' && (

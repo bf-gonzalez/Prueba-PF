@@ -2,6 +2,7 @@ import { Bebas_Neue } from 'next/font/google';
 import React from 'react';
 import axios from 'axios';
 import { GoAlert } from "react-icons/go";
+import Swal from 'sweetalert2';
 
 const bebas = Bebas_Neue({
   subsets: ['latin'],
@@ -10,8 +11,15 @@ const bebas = Bebas_Neue({
 });
 
 const handleActionWithConfirmation = async (actionFn) => {
-  const confirmed = window.confirm("¿Estás seguro de que deseas desbloquear a este usuario?");
-  if (confirmed) {
+  const result = await Swal.fire({
+    title: '¿Estás seguro de que deseas desbloquear a este usuario?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, desbloquear',
+    cancelButtonText: 'No, cancelar',
+  });
+
+  if (result.isConfirmed) {
     try {
       await actionFn();
       window.location.reload();
