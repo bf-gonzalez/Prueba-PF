@@ -69,7 +69,15 @@ export default function UploadPage() {
         <AlertSignIn />
       ) : (
         <section>
-          <div className="flex flex-col items-center justify-center mt-48 p-4">
+          <div className="flex flex-col items-center justify-center lg:mt-32 mt-32 p-2">
+            <section className='flex'>
+            <img
+          src="/images/mis3.png"
+          className="max-w-xs sm:max-w-md md:max-w-md lg:max-w-md mx-auto pb-6 md:pb-4"
+          alt="Instrucciones"
+        />
+            </section>
+
             <div className="flex flex-col items-center">
               <div className="flex space-x-4 mb-4">
                 <button
