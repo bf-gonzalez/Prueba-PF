@@ -11,10 +11,10 @@ export class CronService {
     private readonly membershipsRepository: MembershipsRepository,
     private readonly mailerService: MailerService,
   ) {
-    this.scheduleMembershipCheck();
+    /* this.scheduleMembershipCheck();
   }
   scheduleMembershipCheck() {
-    cron.schedule('0,30 * * * *', () => {
+    cron.schedule('* * * * *', () => {
       console.log('ejecutando');
       this.checkMemberships();
     });
@@ -146,6 +146,6 @@ export class CronService {
           }
         }
       }
-    });
+    }); */
   }
 }
