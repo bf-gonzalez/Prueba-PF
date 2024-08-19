@@ -74,6 +74,7 @@ export class MembershipsRepository {
       let text: string;
       let html: string;
 
+      //estos son los emails
       switch (type) {
         case MembershipType.MonthlyMember:
           subject = '¡Gracias por adquirir la membresía mensual!';
