@@ -7,6 +7,7 @@ import { FaTiktok } from "react-icons/fa6";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const bebas = Bebas_Neue({
     subsets: ['latin'],
@@ -16,6 +17,15 @@ const bebas = Bebas_Neue({
 
 function Footer() {
   const pathname = usePathname();
+  const [userName, setUserName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const decodedUser = localStorage.getItem("decodedUser");
+    if (decodedUser) {
+      const user = JSON.parse(decodedUser);
+      setUserName(user.name);
+    }
+  }, []);
 
   if (pathname === '/') {
     return null;
@@ -61,6 +71,9 @@ function Footer() {
             </li>
           </ul> 
         </div>
+      </div>
+      <div className="text-center mt-4 text-sm opacity-70">
+        {userName ? `Bienvenido ${userName}` : "Bienvenido"}
       </div>
       <div className="text-center mt-4 text-sm opacity-70">
         © ComiCraft. All Rights Reserved. Trademarks and characters are property of their respective owners.

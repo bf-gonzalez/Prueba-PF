@@ -6,28 +6,60 @@ import {
 import { UsersRepository } from 'src/users/users.repository';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { Users } from 'src/users/users.entity';
-import { LoginUserDto } from 'src/users/dto/users.dto';
+
+import { CreateGoogleUserDto, CreateUserDto } from 'src/users/dto/users.dto';
+import { MembershipsRepository } from 'src/membership/membership.repository';
+import { MembershipType } from 'src/enum/membership-type.enum';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly jwtService: JwtService,
+    private readonly membershipsRepository: MembershipsRepository,
   ) {}
 
   async signIn(email: string, password: string) {
+    console.log('inicio de sesion:', email, password);
     try {
       if (!email || !password)
         throw new BadRequestException('Email y password requeridos');
 
       const user = await this.usersRepository.getUserByEmail(email);
-      if (!user) throw new BadRequestException('Credenciales incorrectas');
+      if (!user) {
+        console.log('Credenciales incorrectas: usuario no encontrado');
+        throw new BadRequestException('Credenciales incorrectas');
+      }
 
       const validPassword = await bcrypt.compare(password, user.password);
-      if (!validPassword)
+      console.log('validando contraseña', validPassword);
+      if (!validPassword) {
+        console.log('Credenciales incorrectas: password no válido');
         throw new BadRequestException('Credenciales incorrectas');
-      const payload = { id: user.id, email: user.email };
+      }
+
+      const userMembership =
+        await this.membershipsRepository.getUserMembershipById(user.id);
+      console.log('membresia usuario', userMembership);
+
+      if (!userMembership) {
+        console.log(
+          'No se encontró membresía para el usuario con id:',
+          user.id,
+        );
+        console.log('error membresia', !userMembership);
+      }
+      console.log('userMembership:', userMembership);
+
+      const payload = {
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        MembershipType: userMembership ? userMembership.type : null,
+        profilePicture: user.profilePicture
+      };
       const token = this.jwtService.sign(payload);
 
       return {
@@ -40,7 +72,7 @@ export class AuthService {
     }
   }
 
-  async signUp(user: LoginUserDto) {
+  async signUp(user: CreateUserDto | CreateGoogleUserDto) {
     const { email, password } = user;
     try {
       if (!password)

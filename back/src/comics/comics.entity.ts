@@ -1,76 +1,118 @@
-import { Categories } from "src/categories/categories.entity";
-import { Users } from "src/users/users.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-
+import { Categories } from 'src/categories/categories.entity';
+import { Comments } from 'src/comment/comment.entity';
+import { Users } from 'src/users/users.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
+export class Comics {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-export class Comics{
+  /**
+   * Es de tipo varchar, puede usar hasta 50 caracteres no puede ser null
+   * @example "Marvel"
+   */
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+    unique: true,
+  })
+  title: string;
 
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  /**
+   * Es de tipo varchar, puede usar hasta 50 caracteres no puede ser null
+   * @example "Este comic tiene mucha accion, peleas y cuanta con un gran gion"
+   */
+  @Column({
+    type: 'varchar',
+    length: 256,
+    nullable: false,
+  })
+  description: string;
 
-    /**
-     * Es de tipo varchar, puede usar hasta 50 caracteres no puede ser null
-     * @example "Marvel"
-     */
-    @Column({
-        type: 'varchar',
-        length: 30,
-        nullable: false,
-        unique: true,
+  /**
+   * Es de tipo varchar, puede usar hasta 50 caracteres no puede ser null
+   * @example "Batman"
+   */
+  @Column({
+    type: 'varchar',
+    length: 25,
+    unique: false,
+    nullable: false,
+  })
+  author: string;
 
-    })
-    title: string;
+  /**
+   * Es la categoria que le da el usuario al crear su comic
+   * @example "Aventura"
+   */
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  categoryname: string;
 
-    /**
-     * Es de tipo varchar, puede usar hasta 50 caracteres no puede ser null
-     * @example "Este comic tiene mucha accion, peleas y cuanta con un gran gion"
-     */
-    @Column({
-        type: 'varchar',
-        length: 150,
-        nullable: false,
+  /**
+   * Es el tipo de comic ya sea manga,occidental,etc
+   * @example "Manga"
+   */
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  typecomic: string;
 
-    })
-    description: string
+  /**
+   * Es el idioma del comic Ej. ingles,español,etc
+   * @example "Ingles"
+   */
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  idioma: string
 
-    /**
-     * Es de tipo varchar, puede usar hasta 50 caracteres no puede ser null
-     * @example "Batman"
-     */
-    @Column({
-        type: 'varchar',
-        length: 25,
-        unique: true,
-        nullable: false,
-    })
-    autor: string;
+  /**
+   * Es de tipo varchar, puede usar hasta 50 caracteres no puede ser null
+   * @example "1990-07-25"
+   */
+  @Column({
+    type: 'date',
+    nullable: false,
+  })
+  data_post: Date;
 
-    /**
-     * Es de tipo varchar, puede usar hasta 50 caracteres no puede ser null
-     * @example "1990-07-25"
-     */
-    @Column({
-        type: 'date',
-        nullable: false
-    })
-    data_post: Date;
+  /**
+   * Es de tipo text y tiene que ser una URL
+   * @example "https://res.cloudinary.com/dyeji7bvg/image/upload/v1720248068/uhzzius1h9lbjc8k3hd9.webp"
+   */
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
+  folderName: string;
 
-    /**
-     * Es de tipo text y tiene que ser una URL
-     * @example "https://res.cloudinary.com/dyeji7bvg/image/upload/v1720248068/uhzzius1h9lbjc8k3hd9.webp"
-     */
-    @Column({
-        type: 'text',
-    })
-    imgUrl: string;
+  @Column({ type: 'boolean', default: false })
+  isActive: boolean;
 
-    @ManyToOne(() => Users, (user) => user.comics, { eager: true, nullable: false })
-    user: Users;
+  @ManyToOne(() => Users, (user) => user.comics, {
+    eager: true,
+    nullable: false,
+  })
+  user: Users;
 
-    @ManyToOne(() => Categories, (category) => category.comics)
-    @JoinColumn({name: 'category_id'})
-    category: Categories;
+  @ManyToOne(() => Categories, (category) => category.comics)
+  @JoinColumn({ name: 'category_id' })
+  category: Categories;
 
+  @OneToMany(() => Comments, (comment) => comment.comic)
+  comment: Comments[];
 }

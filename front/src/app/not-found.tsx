@@ -1,4 +1,5 @@
 'use client'
+import NotFoundComp from "@/components/notFoundComp/NotFoundComp";
 import Image from "next/image"
 
 const NotFound: React.FC= () => {
@@ -8,7 +9,7 @@ const NotFound: React.FC= () => {
         <div >
             
         
-    
+        <NotFoundComp />
 
 
         </div>

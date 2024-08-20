@@ -1,5 +1,5 @@
 export enum MembershipType {
-    Monthly = 'monthly',
-    Annual = 'annual',
-  }
-  
+  MonthlyMember = 'monthly_member',
+  AnnualMember = 'annual_member',
+  Creator = 'creator',
+}

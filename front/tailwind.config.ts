@@ -8,6 +8,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      spacing: {
+        '112': '28rem', // Añade tu tamaño personalizado aquí
+        '144': '36rem', // Añade tu tamaño personalizado aquí
+      },
       backgroundColor: {
         'custom-transparent': 'rgba(100, 6, 43, 0.5)',
         'custom-input': 'rgba(245, 199, 2, 0.7)',
@@ -17,11 +21,11 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
-    fontFamily: {
-      sans: 'var(--font-bebas)',
-      mono: 'var(--font-antonio)',
-      black: 'var (--font-josefin)'
-    },
+      fontFamily: {
+        sans: 'var(--font-bebas)',
+        mono: 'var(--font-antonio)',
+        black: 'var (--font-josefin)'
+      },
       keyframes: {
         display: {
           '0%': { transform: 'translateX(200px)', opacity: '0' },

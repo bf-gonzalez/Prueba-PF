@@ -1,59 +1,169 @@
-"use client"
-
-import { useEffect, useState } from 'react';
+"use client";
+import { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '../../components/regularBackground/RegularBackground.module.css';
 import ImageUpload from '@/components/ImageUpload';
-
+import { UserContext } from '@/context/userContext';
+import CategorySelector from '@/components/ImageUploadHelper/CategorySelector';
+import AlertSignIn from '@/components/alertSignIn/AlertSignIn';
+import axios from 'axios';
+import ChatbotIcon from '@/components/Chatbot/ChatbotIcon';
 
 export default function UploadPage() {
-  const [folders, setFolders] = useState([]);
+  const { isLogged, user } = useContext(UserContext);
   const [folderName, setFolderName] = useState('');
+  const [description, setDescription] = useState('');
+  const [comicData, setComicData] = useState(null); 
   const router = useRouter();
+  const [uploadMode, setUploadMode] = useState('single'); 
+  const [categories, setCategories] = useState({ categories: [], typeComic: null, language: null });
+  const [membershipType, setMembershipType] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [folderNameError, setFolderNameError] = useState<string | null>(null);
+  const [descriptionError, setDescriptionError] = useState<string | null>(null);
+  const [showError, setShowError] = useState(false);
 
   useEffect(() => {
-    const fetchFolders = async () => {
-      try {
-        const response = await fetch('/api/folders');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setFolders(data);
-      } catch (error) {
-        console.error('Error fetching folders:', error);
-      }
-    };
+    const decodedUser = localStorage.getItem("decodedUser");
+    if (decodedUser) {
+      const user = JSON.parse(decodedUser);
+      setMembershipType(user.MembershipType);
+      setIsAdmin(user.role.includes("admin"));
+      console.log(user.membershipType);
+    } else {
+      setMembershipType(null);
+    }
+  }, [user]);
 
-    fetchFolders();
-  }, []);
-
-  const handleFolderClick = (folder) => {
-    router.push(`/upload/${folder}`);
+  const validateFolderName = (name: string) => {
+    if (name.length < 3) {
+      setFolderNameError('El nombre del cómic debe tener al menos 3 letras');
+    } else {
+      setFolderNameError(null);
+    }
   };
+
+  const validateDescription = (desc: string) => {
+    if (desc.length < 12) {
+      setDescriptionError('La descripción del Cómic debe tener al menos 12 letras');
+    } else {
+      setDescriptionError(null);
+    }
+  };
+
+  const handleFolderNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.value;
+    setFolderName(name);
+    validateFolderName(name);
+  };
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const desc = e.target.value;
+    setDescription(desc);
+    validateDescription(desc);
+  };
+
+  const handleComicDataChange = (data) => {
+    setComicData(data);
+  };
+
+  const resetFields = () => {
+    setFolderName('');
+    setDescription('');
+    setComicData(null);
+    setCategories({ categories: [], typeComic: null, language: null });
+  };
+
+  const handleCategoryChange = (selectedCategories) => {
+    setCategories(selectedCategories);
+  };
+
+  const handleSubmit = () => {
+    validateFolderName(folderName);
+    validateDescription(description);
+    setShowError(true);
+  };
+
+  const showSubscriptionPage = isLogged && (['creator'].includes(membershipType) || isAdmin);
 
   return (
     <main className={styles.fondo}>
-      <div className="flex h-screen items-center justify-center">
-        <div>
-          <input 
-            type="text" 
-            placeholder="Nombre de la carpeta" 
-            value={folderName} 
-            onChange={(e) => setFolderName(e.target.value)} 
-            className="mb-4 p-2 border rounded"
-          />
-          <ImageUpload folderName={folderName} />
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-4 p-4">
-        {folders.map((folder) => (
-          <div key={folder.name} onClick={() => handleFolderClick(folder.name)} className="cursor-pointer">
-            <img src={folder.firstImage} alt={folder.name} className="w-full h-auto" />
-            <p>{folder.name}</p>
+      <ChatbotIcon />
+      {!showSubscriptionPage ? (
+        <AlertSignIn />
+      ) : (
+        <section>
+          <div className="flex flex-col items-center justify-center lg:mt-32 mt-32 p-2">
+            <section className='flex'>
+            <img
+          src="/images/mis3.png"
+          className="max-w-xs sm:max-w-md md:max-w-md lg:max-w-md mx-auto pb-6 md:pb-4"
+          alt="Instrucciones"
+        />
+            </section>
+
+            <div className="flex flex-col items-center">
+              <div className="flex space-x-4 mb-4">
+                <button
+                  onClick={() => setUploadMode('single')}
+                  className={`px-4 py-2 rounded ${uploadMode === 'single' ? 'bg-blue-700 text-white' : 'bg-gray-200 text-gray-800'} transition-colors duration-300`}
+                >
+                  Subir Imágenes Individuales
+                </button>
+                <button
+                  onClick={() => setUploadMode('folder')}
+                  className={`px-4 py-2 rounded ${uploadMode === 'folder' ? 'bg-blue-700 text-white' : 'bg-gray-200 text-gray-800'} transition-colors duration-300`}
+                >
+                  Subir Carpeta
+                </button>
+              </div>
+              <div className="w-full mb-4">
+                <input
+                  type="text"
+                  placeholder="Nombre del Cómic"
+                  value={folderName}
+                  onChange={handleFolderNameChange}
+                  className="py-2 px-4 border-2 rounded-lg text-white border-rose-800 bg-black bg-opacity-30 w-full"
+                />
+                {showError && folderNameError && (
+                  <p className="text-red-500 text-xs italic mt-2">
+                    {folderNameError}
+                  </p>
+                )}
+              </div>
+              <div className="w-full mb-4">
+                <textarea
+                  placeholder="Descripción del Cómic"
+                  value={description}
+                  onChange={handleDescriptionChange}
+                  className="py-2 px-4 border-2 rounded-lg text-white border-rose-800 bg-black bg-opacity-30 resize-none overflow-y-auto h-32 w-full"
+                  maxLength={256}
+                />
+                {showError && descriptionError && (
+                  <p className="text-red-500 text-xs italic mt-2">
+                    {descriptionError}
+                  </p>
+                )}
+                <div className="text-right text-sm text-gray-500">{description.length}/256</div>
+              </div>
+            </div>
+            <div className="w-full mb-4 flex flex-col items-center">
+              <CategorySelector onChange={handleCategoryChange} />
+            </div>
+            <ImageUpload
+              folderName={folderName}
+              description={description}
+              onComicDataChange={handleComicDataChange}
+              onUploadSuccess={resetFields}
+              uploadMode={uploadMode}
+              categories={categories}
+              isUploadDisabled={folderName.length < 3 || description.length < 12}
+              setFolderNameError={setFolderNameError}
+              setDescriptionError={setDescriptionError}
+            />
           </div>
-        ))}
-      </div>
+        </section>
+      )}
     </main>
   );
 }

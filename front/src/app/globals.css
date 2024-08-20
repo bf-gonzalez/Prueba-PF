@@ -32,3 +32,9 @@ body {
   }
 }
 
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+}
+

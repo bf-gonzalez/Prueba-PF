@@ -20,6 +20,7 @@ export const Register = () => {
     const [signUpValues, setSignUp] = useState({
         name: "",
         email: "",
+        username: "",
         password: "",
         confirmPassword: "",
         address: "",
@@ -31,8 +32,12 @@ export const Register = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setSignUp({ ...signUpValues, [name]: value });
-        const newErrors = validateRegister({ ...signUpValues, [name]: value });
-        setErrors(newErrors);
+
+        const fieldErrors = validateRegister({ ...signUpValues, [name]: value });
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            [name]: fieldErrors[name] || ""
+        }));
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -43,13 +48,15 @@ export const Register = () => {
         if (Object.keys(validationErrors).length === 0) {
             const user = {
                 email: signUpValues.email,
+                username: signUpValues.username,
                 password: signUpValues.password,
                 confirmPassword: signUpValues.confirmPassword,
                 name: signUpValues.name,
                 address: signUpValues.address,
-                phone: signUpValues.phone,
+                phone: Number(signUpValues.phone),
                 dob: signUpValues.dob,
             };
+
             try {
                 const success = await signUp(user);
 
@@ -57,20 +64,26 @@ export const Register = () => {
                     Swal.fire({
                         icon: "success",
                         title: "Bienvenido",
-                        text: "Disfrute de lo mejor!",
+                        text: "Disfruta de lo mejor!",
                     });
                     router.push("/home");
                 } else {
                     Swal.fire({
                         icon: "error",
                         title: "Oops...",
-                        text: "Tus Credenciales no son correctas!",
+                        text: "Ya existe una cuenta con este email.",
                     });
                 }
             } catch (error) {
                 console.error("Error durante el registro:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Hubo un problema con el registro. Por favor, inténtalo de nuevo.",
+                });
             }
         } else {
+            setErrors(validationErrors);
             console.log("Errores en el formulario:", validationErrors);
         }
     };
@@ -101,6 +114,18 @@ export const Register = () => {
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-custom-input placeholder-black"
                     />
                     {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}
+                </div>
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        onChange={handleChange}
+                        placeholder="Nombre de usuario"
+                        value={signUpValues.username}
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline bg-custom-input placeholder-black"
+                    />
+                    {errors.username && <p className="text-red-500 text-xs italic">{errors.username}</p>}
                 </div>
                 <div className="mb-4">
                     <input
@@ -151,7 +176,7 @@ export const Register = () => {
                     {errors.address && <p className="text-red-500 text-xs italic">{errors.address}</p>}
                 </div>
                 <div className="mb-4">
-                <label htmlFor="password" className="block text-yellow-600 text-sm font-bold mb-2">Fecha de nacimiento:</label>
+                    <label htmlFor="dob" className="block text-yellow-600 text-sm font-bold mb-2">Fecha de nacimiento:</label>
                     <input
                         type="date"
                         id="dob"
@@ -167,6 +192,12 @@ export const Register = () => {
                     login cursor-pointer
                     text-4xl text-white hover:text-yellow-400
                     transition-all custom-transition duration-300`}>Registrarse</button>
+                    <div className="flex flex-col">
+                        <p className="ml-12 text-base ">Ya tienes una cuenta?</p>
+                        <button type="button"
+                            className="text-blue-600 text-base text-end ml-4"
+                            onClick={() => router.push('/login')}>Inicia sesión!</button>
+                    </div>
                 </div>
             </form>
         </div>
