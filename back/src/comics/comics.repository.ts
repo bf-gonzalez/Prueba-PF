@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comics } from './comics.entity';
-import { Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Users } from 'src/users/users.entity';
 import { Categories } from 'src/categories/categories.entity';
 import data from '../utils/data.json';

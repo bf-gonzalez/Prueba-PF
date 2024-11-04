@@ -1,6 +1,5 @@
 import { PickType } from '@nestjs/swagger';
 import {
-  IsEnum,
   IsOptional,
   IsString,
   IsNumber,
@@ -9,17 +8,12 @@ import {
   MaxLength,
   Matches,
   IsEmail,
-  IsStrongPassword,
   Validate,
   IsDate,
-  IsArray,
-  IsEmpty,
   IsBoolean,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { MatchPassword } from 'src/decorators/matchPassword.decorator';
-import { MembershipType } from 'src/enum/membership-type.enum';
-import { Role } from 'src/enum/role.enum';
 
 export class CreateUserDto {
   /**

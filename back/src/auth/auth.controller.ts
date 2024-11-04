@@ -6,7 +6,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginUserDto, CreateGoogleUserDto } from 'src/users/dto/users.dto';
+import {
+  CreateUserDto,
+  LoginUserDto,
+  CreateGoogleUserDto,
+} from 'src/dto/users.dto';
 import { PasswordInterceptor } from 'src/interceptors/password.interceptor';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -15,18 +19,18 @@ import { ApiTags } from '@nestjs/swagger';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('signin')
-  @HttpCode(201)
-  signin(@Body() credentials: LoginUserDto) {
-    const { password, email } = credentials;
-    return this.authService.signIn(email, password);
-  }
-
   @Post('signup')
   @HttpCode(201)
   @UseInterceptors(PasswordInterceptor)
   signUp(@Body() user: CreateUserDto) {
     return this.authService.signUp(user);
+  }
+
+  @Post('signin')
+  @HttpCode(201)
+  signin(@Body() credentials: LoginUserDto) {
+    const { password, email } = credentials;
+    return this.authService.signIn(email, password);
   }
 
   @Post('signupGoogle')

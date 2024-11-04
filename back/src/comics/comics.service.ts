@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Comic } from './interfaces/comic.interface';
 import { ComicsRepository } from './comics.repository';
 import { Comics } from './comics.entity';
-import { Users } from 'src/users/users.entity';
 
 @Injectable()
 export class ComicsService {
@@ -32,11 +30,11 @@ export class ComicsService {
     return this.comicsRepository.getComicByTitle(title);
   }
 
-  getComicByIdioma(idioma: string){
+  getComicByIdioma(idioma: string) {
     return this.comicsRepository.getComicByIdioma(idioma);
   }
-  
-  getComicByType(typecomic: string){
+
+  getComicByType(typecomic: string) {
     return this.comicsRepository.getComicByTyoe(typecomic);
   }
 

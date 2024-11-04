@@ -10,8 +10,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { ComicsService } from './comics.service';
-import { Comic } from './interfaces/comic.interface';
-import { title } from 'process';
 import { Comics } from './comics.entity';
 import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
@@ -86,11 +84,6 @@ export class ComicsController {
     !limit ? (limit = '5') : limit;
     return this.comicsService.getActiveComics(Number(page), Number(limit));
   }
-
-  /* @Get('seeder/:id')
-  addComics(@Param('id', ParseUUIDPipe) id: string) {
-    return this.comicsService.addComics(id);
-  } */
 
   @Get(':id')
   getComicById(@Param('id') id: string) {

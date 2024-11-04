@@ -14,7 +14,7 @@ import {
   CreateUserDto,
   LoginUserDto,
   CreateGoogleUserDto,
-} from './dto/users.dto';
+} from '../dto/users.dto';
 import { Role } from 'src/enum/role.enum';
 import { Membership } from 'src/membership/membership.entity';
 import { MembershipType } from 'src/enum/membership-type.enum';
@@ -42,7 +42,7 @@ export class UsersRepository {
       if (users.length < 1) {
         throw new NotFoundException('No se encontraron usuarios');
       }
-      /*  const activeUsers = users.filter((user) => user.isDeleted === false); */
+
       return users;
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
@@ -280,12 +280,11 @@ export class UsersRepository {
 
   async updateUser(id: string, user: Partial<Users>) {
     try {
-
       //En caso de querer cambiar el password
-      if(user.password){
+      if (user.password) {
         user.password = await bcrypt.hash(user.password, 10);
       }
-      
+
       await this.usersRepository.update(id, user);
       const updateUser = await this.usersRepository.findOneBy({ id });
       if (!updateUser) {
